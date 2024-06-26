@@ -1,0 +1,6 @@
+[submodule "/home/s5614279/Master Project/AutoSFX/submodules"]
+	path = /home/s5614279/Master Project/AutoSFX/submodules
+	url = https://github.com/facebookresearch/fairseq.git
+[submodule "videoCLIP"]
+	path = videoCLIP
+	url = https://github.com/facebookresearch/fairseq.git
