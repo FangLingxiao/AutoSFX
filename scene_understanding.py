@@ -142,19 +142,16 @@ class SceneUnderstanding:
 
     
 def ask_chatgpt(prompt):
-    # 从环境变量中获取API密钥
+    # get API key from .env
     openai_api_key = os.getenv("OPENAI_API_KEY")
     
-    # 设置API密钥
     openai.api_key = openai_api_key
     
-    # 调用OpenAI API
     response = openai.Completion.create(
-        engine="text-davinci-003",  # 使用的模型引擎
-        prompt=prompt,              # 你的提示文本
-        max_tokens=150              # 最大生成的token数量
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=150 
     )
     
-    # 返回生成的文本
     return response.choices[0].text.strip()
 
