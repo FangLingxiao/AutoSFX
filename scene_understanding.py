@@ -56,7 +56,8 @@ class SceneUnderstanding:
         self.blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to(self.device)
         self.ram_model = ram_plus(pretrained='/home/s5614279/Master Project/ram_plus_swin_large_14m.pth',
                                   image_size=224,
-                                  vit='swin_1').to(self.device)
+                                  vit='swin_l').to(self.device)
+
         
     def classify_scene(self, image):
         image = self.clip_preprocess(image).unsqueeze(0).to(self.device)
@@ -98,29 +99,30 @@ class SceneUnderstanding:
         return caption
 
     def recognize_objects(self, image):
-        object = self.ram_model(image)
-        return object["tags"]
+        result = self.ram_model(image)
+        return result["tags"]
 
     def analyze_image(self, image):
         scene_type = self.classify_scene(image)
         location = self.classify_place(image)
         
-        time = ""
-        weather = ""
-        if scene_type == "outdoors":
-            time = self.classify_time(image)
-            weather = self.classify_weather(image)
+        #if scene_type == "outdoors":
+        time = self.classify_time(image)
+        weather = self.classify_weather(image)
         
         objects = self.recognize_objects(image)
         caption = self.generate_caption(image)
+
+        general_context = f"I see {objects}. I am {scene_type}. I am at {location}. The time is {time}. The weather is {weather}. Overall, I see {caption}."
         
         return {
             "objects": objects,
+            "ambience":scene_type,
             "location": location,
             "time": time,
             "weather": weather,
             "caption": caption
-        }
+        }, general_context
     
     def process_video(self, video_path, output_size=(224, 224)):
         video_capture = cv2.VideoCapture(video_path)
