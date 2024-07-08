@@ -2,6 +2,7 @@ import openai
 import torch
 import clip
 from PIL import Image
+from torchvision import transforms
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from ram.models import ram_plus
 import cv2
@@ -24,7 +25,7 @@ places365_classes = [
     "room", "sauna", "shoe_shop", "shopping_mall", "shower",
     "spa", "staircase", "storage_room", "supermarket", "swimming_pool",
     "synagogue", "teenager_room", "television_studio", "theater", "train_station",
-    "waiting_room", "wine_cellar""abbey", "airport", "amphitheater", "amusement_park", "aquarium",
+    "waiting_room", "wine_cellar","abbey", "airport", "amphitheater", "amusement_park", "aquarium",
     "arch", "assembly_line", "athletic_field", "badlands", "barn",
     "baseball_field", "basketball_court", "beach", "boathouse", "botanical_garden",
     "bridge", "building_facade", "burial_site", "bus_station", "campsite",
@@ -51,67 +52,91 @@ places365_classes = [
 class SceneUnderstanding:
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.clip_model, self.clip_preprocess = clip.load("ViT-B/32", device=self.device)
+        self.clip_model, self.clip_preprocess = self.load_clip_model()
         self.blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
         self.blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base").to(self.device)
         self.ram_model = ram_plus(pretrained='/home/s5614279/Master Project/ram_plus_swin_large_14m.pth',
                                   image_size=224,
                                   vit='swin_l').to(self.device)
-
+    def load_clip_model(self):
+        clip_model, preprocess = clip.load("ViT-B/32", device=self.device)
+        return clip_model, preprocess
+    
+    def preprocess_image(self, image):
+        preprocess = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711)),
+        ])
+        image_tensor = preprocess(image)
+        return image_tensor.unsqueeze(0).to(self.device)
         
-    def classify_scene(self, image):
-        image = self.clip_preprocess(image).unsqueeze(0).to(self.device)
+    def classify_scene(self, image_tensor):
+        text_inputs = clip.tokenize(["a photo of indoors", "a photo of outdoors"]).to(self.device)
         with torch.no_grad():
-            logits_per_image, _ = self.clip_model(image, self.clip_preprocess(["indoors", "outdoors"]))
-            probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+            image_features = self.clip_model.encode_image(image_tensor)
+            text_features = self.clip_model.encode_text(text_inputs)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+        probs = similarity.cpu().numpy()
         return "indoors" if probs[0][0] > probs[0][1] else "outdoors"
     
-    def classify_place(self, image):
-        image = self.clip_preprocess(image).unsqueeze(0).to(self.device)
+    def classify_place(self, image_tensor):
+        text_inputs = torch.cat([clip.tokenize(f"a photo of {c}") for c in places365_classes]).to(self.device)
         with torch.no_grad():
-            text_inputs = torch.cat([clip.tokenize(f"a photo of {c}") for c in places365_classes]).to(self.device)
-            logits_per_image, logits_per_text = self.clip_model(image, text_inputs)
-            probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+            image_features = self.clip_model.encode_image(image_tensor)
+            text_features = self.clip_model.encode_text(text_inputs)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+        probs = similarity.cpu().numpy()
         return places365_classes[probs.argmax()]
     
-    def classify_time(self, image):
+    def classify_time(self, image_tensor):
         time_classes = ["morning", "afternoon", "evening", "night"]
-        image = self.clip_preprocess(image).unsqueeze(0).to(self.device)
+        text_inputs = torch.cat([clip.tokenize(f"a photo taken in the {t}") for t in time_classes]).to(self.device)
         with torch.no_grad():
-            text_inputs = torch.cat([clip.tokenize(f"a photo taken in the {t}") for t in time_classes]).to(self.device)
-            logits_per_image, logits_per_text = self.clip_model(image, text_inputs)
-            probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+            image_features = self.clip_model.encode_image(image_tensor)
+            text_features = self.clip_model.encode_text(text_inputs)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+        probs = similarity.cpu().numpy()
         return time_classes[probs.argmax()]
 
-    def classify_weather(self, image):
+    def classify_weather(self, image_tensor):
         weather_classes = ["sunny", "foggy", "windy", "cloudy", "thunderstorm", "rainy", "drizzle", "snowy", "blizzard"]
-        image = self.clip_preprocess(image).unsqueeze(0).to(self.device)
+        text_inputs = torch.cat([clip.tokenize(f"a photo of a {w} day") for w in weather_classes]).to(self.device)
         with torch.no_grad():
-            text_inputs = torch.cat([clip.tokenize(f"a photo of a {w} day") for w in weather_classes]).to(self.device)
-            logits_per_image, logits_per_text = self.clip_model(image, text_inputs)
-            probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+            image_features = self.clip_model.encode_image(image_tensor)
+            text_features = self.clip_model.encode_text(text_inputs)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+        probs = similarity.cpu().numpy()
         return weather_classes[probs.argmax()]
 
-    def generate_caption(self, image):
-        inputs = self.blip_processor(images=image, return_tensors="pt").to(self.device)
+    def generate_caption(self, image_tensor):
+        inputs = self.blip_processor(images=image_tensor, return_tensors="pt").to(self.device)
         out = self.blip_model.generate(**inputs)
         caption = self.blip_processor.decode(out[0], skip_special_tokens=True)
         return caption
 
-    def recognize_objects(self, image):
-        result = self.ram_model(image)
+    def recognize_objects(self, image_tensor):
+        result = self.ram_model(image_tensor)
         return result["tags"]
 
     def analyze_image(self, image):
-        scene_type = self.classify_scene(image)
-        location = self.classify_place(image)
+        image_tensor = self.preprocess_image(image)
+        location = self.classify_place(image_tensor)
+        scene_type = self.classify_scene(image_tensor)
         
-        #if scene_type == "outdoors":
-        time = self.classify_time(image)
-        weather = self.classify_weather(image)
+        time = self.classify_time(image_tensor)
+        weather = self.classify_weather(image_tensor)
         
-        objects = self.recognize_objects(image)
-        caption = self.generate_caption(image)
+        objects = self.recognize_objects(image_tensor)
+        caption = self.generate_caption(image_tensor)
 
         general_context = f"I see {objects}. I am {scene_type}. I am at {location}. The time is {time}. The weather is {weather}. Overall, I see {caption}."
         
