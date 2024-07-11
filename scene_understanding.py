@@ -51,6 +51,18 @@ places365_classes = [
     "underwater", "valley", "viaduct", "volcano", "waterfall",
     "wheat_field", "wind_farm", "yard", "zoo"
     ]
+ESC_50_classes = [
+    "Dog", "Rain", "Crying baby", "Door knock", "Helicopter",
+    "Rooster", "Sea waves", "Sneezing", "Mouse click", "Chainsaw",
+    "Pig", "Crackling fire", "Clapping", "Keyboard typing", "Siren",
+    "Cow", "Crickets", "Breathing", "Door, wood creaks", "Car horn",
+    "Frog", "Chirping birds", "Coughing", "Can opening", "Engine",
+    "Cat", "Water drops", "Footsteps", "Washing machine", "Train",
+    "Hen", "Wind", "Laughing", "Vacuum cleaner", "Church bells",
+    "Insects (flying)", "Pouring water", "Brushing teeth", "Clock alarm", "Airplane",
+    "Sheep", "Toilet flush", "Snoring", "Clock tick", "Fireworks",
+    "Crow", "Thunderstorm", "Drinking, sipping", "Glass breaking", "Hand saw"
+]
 
 class SceneUnderstanding:
     def __init__(self):
@@ -65,13 +77,12 @@ class SceneUnderstanding:
     
     def preprocess_image(self, image):
         preprocess = transforms.Compose([
-            transforms.Resize((224, 224)),
             transforms.ToTensor()
         ])
         image_tensor = preprocess(image)
-        normalized_image_tensor = transforms.Normalize((0.48145466, 0.4578275, 0.40821073), 
-                                                       (0.26862954, 0.26130258, 0.27577711))(image_tensor)
-        return image_tensor.unsqueeze(0).to(self.device), normalized_image_tensor.unsqueeze(0).to(self.device)
+        #normalized_image_tensor = transforms.Normalize((0.48145466, 0.4578275, 0.40821073), 
+        #                                               (0.26862954, 0.26130258, 0.27577711))(image_tensor)
+        return image_tensor.unsqueeze(0).to(self.device)
         
     def classify_scene(self, image_tensor):
         text_inputs = clip.tokenize(["a photo of indoors", "a photo of outdoors"]).to(self.device)
@@ -126,7 +137,7 @@ class SceneUnderstanding:
         return caption
 
     def recognize_objects(self, image_tensor):
-        text_inputs = torch.cat([clip.tokenize(f"a photo of {c}") for c in cifar100.classes]).to(self.device)
+        text_inputs = torch.cat([clip.tokenize(f"a photo of {e}") for e in ESC_50_classes]).to(self.device)
         with torch.no_grad():
             image_features = self.clip_model.encode_image(image_tensor)
             text_features = self.clip_model.encode_text(text_inputs)
@@ -134,18 +145,20 @@ class SceneUnderstanding:
         text_features /= text_features.norm(dim=-1, keepdim=True)
         similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
         values, indices = similarity[0].topk(5)
-        return values, indices
+        object_names = [cifar100.classes[idx] for idx in indices]
+        values = [value.item() for value in values]
+        return values, object_names
 
     def analyze_image(self, image):
-        original_image_tensor, image_tensor = self.preprocess_image(image)
+        image_tensor= self.preprocess_image(image)
         location = self.classify_place(image_tensor)
         scene_type = self.classify_scene(image_tensor)
         
         time = self.classify_time(image_tensor)
         weather = self.classify_weather(image_tensor)
         
-        values,objects = self.recognize_objects(image_tensor)[1]
-        caption = self.generate_caption(original_image_tensor)
+        values,objects = self.recognize_objects(image_tensor)
+        caption = self.generate_caption(image_tensor)
 
         general_context = f"I see {objects}. I am {scene_type}. I am at {location}. The time is {time}. The weather is {weather}. Overall, I see {caption}."
         
