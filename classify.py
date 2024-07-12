@@ -35,7 +35,9 @@ class Classify:
         #                                               (0.26862954, 0.26130258, 0.27577711))(image_tensor)
         return image_tensor.unsqueeze(0).to(self.device)
     
-    def recognize_objects(self, image_tensor):
+    def recognize_objects(self, image):
+        image_tensor= self.preprocess_image(image)
+
         text_inputs = torch.cat([clip.tokenize(f"a photo of {e}") for e in ESC_50_classes]).to(self.device)
         with torch.no_grad():
             image_features = self.clip_model.encode_image(image_tensor)
