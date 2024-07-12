@@ -10,7 +10,7 @@ from openai import OpenAI
 
 
 # Prepare the dataset
-cifar100 = CIFAR100(root=os.path.expanduser("~/.cache"), download=True, train=False)
+#cifar100 = CIFAR100(root=os.path.expanduser("~/.cache"), download=True, train=False)
 places365_classes = [
     "airport_terminal", "art_gallery", "auditorium", "bakery", "bar",
     "bathroom", "bedroom", "bookstore", "bowling_alley", "buffet",
@@ -52,12 +52,12 @@ places365_classes = [
     "wheat_field", "wind_farm", "yard", "zoo"
     ]
 ESC_50_classes = [
-    "Dog", "Rain", "Crying baby", "Door knock", "Helicopter",
+    "Dog", "Rain", "Crying baby", "Door knock", "Helicopter","Horse",
     "Rooster", "Sea waves", "Sneezing", "Mouse click", "Chainsaw",
     "Pig", "Crackling fire", "Clapping", "Keyboard typing", "Siren",
     "Cow", "Crickets", "Breathing", "Door, wood creaks", "Car horn",
     "Frog", "Chirping birds", "Coughing", "Can opening", "Engine",
-    "Cat", "Water drops", "Footsteps", "Washing machine", "Train",
+    "Cat", "Water drops", "Footsteps", "Washing machine", "Train","running",
     "Hen", "Wind", "Laughing", "Vacuum cleaner", "Church bells",
     "Insects (flying)", "Pouring water", "Brushing teeth", "Clock alarm", "Airplane",
     "Sheep", "Toilet flush", "Snoring", "Clock tick", "Fireworks",
@@ -145,7 +145,7 @@ class SceneUnderstanding:
         text_features /= text_features.norm(dim=-1, keepdim=True)
         similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
         values, indices = similarity[0].topk(5)
-        object_names = [cifar100.classes[idx] for idx in indices]
+        object_names = [ESC_50_classes[idx] for idx in indices]
         values = [value.item() for value in values]
         return values, object_names
 
@@ -161,8 +161,9 @@ class SceneUnderstanding:
         caption = self.generate_caption(image_tensor)
 
         general_context = f"I see {objects}. I am {scene_type}. I am at {location}. The time is {time}. The weather is {weather}. Overall, I see {caption}."
-        
-        return {
+        """
+        This part is for chatgpt
+            return {
             "objects": objects,
             "values": values,
             "ambience":scene_type,
@@ -171,6 +172,9 @@ class SceneUnderstanding:
             "weather": weather,
             "caption": caption
         }, general_context
+        """
+        return values, objects
+
     
     def process_video(self, video_path, output_size=(224, 224)):
         video_capture = cv2.VideoCapture(video_path)
