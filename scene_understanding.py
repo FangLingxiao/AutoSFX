@@ -1,12 +1,8 @@
-import openai
 import torch
 import clip
 from torchvision import transforms
 from transformers import BlipProcessor, BlipForConditionalGeneration
 import cv2
-import os
-from torchvision.datasets import CIFAR100
-from openai import OpenAI
 
 
 # Prepare the dataset
