@@ -33,7 +33,7 @@ class ObjectIntervalSync:
                     if not self.object_status[obj]['in_interval']:
                         self.object_status[obj]['in_interval'] = True
                         self.object_status[obj]['start_frame'] = frame_idx
-                elif score < 0.5:
+                elif score < 0.3:
                     if self.object_status[obj]['in_interval']:
                         self.object_status[obj]['in_interval'] = False
                         start_frame = self.object_status[obj]['start_frame']
@@ -50,4 +50,5 @@ class ObjectIntervalSync:
                 self.object_intervals[obj].append((start_frame, end_frame, duration))
 
     def get_intervals(self):
+        self.object_intervals = {k: v for k, v in self.object_intervals.items() if v}
         return self.object_intervals
