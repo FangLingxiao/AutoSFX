@@ -5,16 +5,16 @@ from torchvision import transforms
 import cv2
 
 ESC_50_classes = [
-    "Dog", "Rain", "Crying baby", "Door knock", "Helicopter","Horse",
-    "Rooster", "Sea waves", "Sneezing", "Mouse click", "Chainsaw",
-    "Pig", "Crackling fire", "Clapping", "Keyboard typing", "Siren",
-    "Cow", "Crickets", "Breathing", "Door, wood creaks", "Car horn",
-    "Frog", "Chirping birds", "Coughing", "Can opening", "Engine",
-    "Cat", "Water drops", "Footsteps walking running", "Washing machine", "Train",
-    "Hen", "Wind", "Laughing", "Vacuum cleaner", "Church bells",
-    "Insects (flying)", "Pouring water", "Brushing teeth", "Clock alarm", "Airplane",
-    "Sheep", "Toilet flush", "Snoring", "Clock tick", "Fireworks",
-    "Crow", "Thunderstorm", "Drinking, sipping", "Glass breaking", "Hand saw"
+    'dog', 'chirping_birds', 'vacuum_cleaner', 'thunderstorm', 'door_wood_knock',
+    'can_opening', 'crow', 'clapping', 'fireworks', 'chainsaw', 'airplane',
+    'mouse_click', 'pouring_water', 'train', 'sheep', 'water_drops',
+    'church_bells', 'clock_alarm', 'keyboard_typing', 'wind',
+    'footsteps walking running', 'frog', 'cow', 'brushing_teeth', 'car_horn',
+    'crackling_fire', 'helicopter', 'drinking_sipping', 'rain', 'insects',
+    'laughing', 'hen', 'engine', 'breathing', 'crying_baby', 'hand_saw', 'coughing',
+    'glass_breaking', 'snoring', 'toilet_flush', 'pig', 'washing_machine',
+    'clock_tick', 'sneezing', 'rooster', 'sea_waves', 'siren', 'cat',
+    'door_wood_creaks', 'crickets'
 ]
 
 class Classify:
