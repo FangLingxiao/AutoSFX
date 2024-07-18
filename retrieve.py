@@ -31,28 +31,38 @@ class AudioRetriever:
 
     def match_audio_files(self, intervals):
         matched_audios = {}
-
         for obj, obj_intervals in intervals.items():
             matched_audios[obj] = []
             for start_frame, end_frame, duration in obj_intervals:
                 possible_audios = self.audio_data[self.audio_data['category'] == obj]
                 print(f"Object: {obj}, Interval duration: {duration:.2f} seconds")
+                
+                best_audio = None
+                min_duration_diff = float('inf')
+                
                 for _, row in possible_audios.iterrows():
                     audio_file = os.path.join(self.audio_folder, row['filename'])
                     if not os.path.exists(audio_file):
                         print(f"Audio file not found: {audio_file}")
                         continue
+                    
                     audio_duration = self.get_audio_duration(audio_file)
-                    if audio_duration >= duration:
-                        matched_audios[obj].append({
+                    duration_diff = abs(audio_duration - duration)
+                    
+                    if audio_duration >= duration and duration_diff < min_duration_diff:
+                        min_duration_diff = duration_diff
+                        best_audio = {
                             'interval': (start_frame, end_frame),
                             'audio_file': audio_file,
                             'audio_duration': audio_duration
-                        })
-                        print(f"Matched audio file: {audio_file} for object: {obj}")
-                    else:
-                        print(f"Audio file: {audio_file} duration {audio_duration:.2f} is less than interval duration {duration:.2f}")
-
+                        }
+                
+                if best_audio:
+                    matched_audios[obj].append(best_audio)
+                    print(f"Best matched audio file: {best_audio['audio_file']} for object: {obj}")
+                else:
+                    print(f"No suitable audio found for object: {obj} with duration {duration:.2f}")
+        
         return matched_audios
 
 def retrieve_audio(video_path, csv_path, audio_folder):
