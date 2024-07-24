@@ -1,40 +1,68 @@
-from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_audioclips
+from moviepy.editor import VideoFileClip, AudioFileClip, CompositeAudioClip, concatenate_audioclips
+import numpy as np
 
-def merge_audio_video(video_path, audio_infos, output_path):
+def adjust_volume(clip, volume_factor):
+    return clip.volumex(volume_factor)
+
+def merge_audio_video(video_path, effect_infos, ambience_audio, output_path):
     """
-    合并视频和多个音频，并输出到指定路径。
+    Merge video with multiple audios and output to the specified path.
 
     参数:
-    video_path (str): 视频文件路径。
-    audio_infos (list): 包含音频文件信息的列表，格式如下:
+    video_path (str): path to video folder
+    effect_infos (list): list of effect info:
         [
             {
                 'interval': (start_frame, end_frame, duration),
-                'audio_file': 'path_to_audio_file',
+                'effect_file': 'path_to_effect_file',
                 'duration': duration
+                output_path: str
             },
             ...
         ]
-    output_path (str): 输出合并后的视频文件路径。
+    ambience_audio: audio files of ambience
+    output_path (str): output folder
     """
     try:
-        # 加载视频
+        # load video
         video_clip = VideoFileClip(video_path)
         
-        # 加载并剪辑音频
-        audio_clips = []
-        for audio_info in audio_infos:
-            audio_clip = AudioFileClip(audio_info['audio_file'])
-            audio_clip = audio_clip.subclip(0, min(audio_clip.duration, video_clip.duration))
-            audio_clips.append(audio_clip)
+        # load and edit audio
+        effect_clips = []
+        for effect_info in effect_infos:
+            effect_clip = AudioFileClip(effect_info['effect_file'])
+            effect_clip = effect_clip.subclip(0, min(effect_clip.duration, video_clip.duration))
+            effect_clips.append(effect_clip)
+
+        # Merge sound effects
+        if effect_clips:
+            effect_audio = concatenate_audioclips(effect_clips)
+        else:
+            effect_audio = None
         
-        # 合并音频片段
-        final_audio_clip = concatenate_audioclips(audio_clips)
+        # Process effect audio
+        if ambience_audio:
+            ambience_clip =  AudioFileClip(ambience_audio['ambience_file'])
+            # edit ambience duration
+            ambience_clip = ambience_clip.subclip(0, video_clip.duration)
+            # edit ambience volume
+            volume_factor = 10**(-10/20) # convert dB to linear scale factor
+            ambience_clip = adjust_volume(ambience_clip, volume_factor)
+
+            # Merge effect and ambience
+            if effect_audio:
+                final_audio = CompositeAudioClip([effect_audio, ambience_clip])
+            else:
+                final_audio = ambience_clip
+            
+        else:
+            final_audio = effect_audio if effect_audio else None
         
-        # 将音频设置为视频的音频
-        video_clip = video_clip.set_audio(final_audio_clip)
-        
-        # 导出合并后的文件
+        # Set final audio as audio for video
+        if final_audio:
+            video_clip = video_clip.set_audio(final_audio)
+
+        # Output        
         video_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')
         
         return True
