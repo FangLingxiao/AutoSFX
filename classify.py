@@ -35,6 +35,53 @@ class Classify:
         #                                               (0.26862954, 0.26130258, 0.27577711))(image_tensor)
         return image_tensor.unsqueeze(0).to(self.device)
     
+    def classify_place(self, image_tensor):
+        place_classes = ["natrue", "urban"]
+        text_inputs = torch.cat([clip.tokenize(f"a photo of {c}") for c in place_classes]).to(self.device)
+        with torch.no_grad():
+            image_features = self.clip_model.encode_image(image_tensor)
+            text_features = self.clip_model.encode_text(text_inputs)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+        probs = similarity.cpu().numpy()
+        return place_classes[probs.argmax()]
+    
+    def classify_scene(self, image_tensor):
+        text_inputs = clip.tokenize(["a photo of indoors", "a photo of outdoors"]).to(self.device)
+        with torch.no_grad():
+            image_features = self.clip_model.encode_image(image_tensor)
+            text_features = self.clip_model.encode_text(text_inputs)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+        probs = similarity.cpu().numpy()
+        return "indoors" if probs[0][0] > probs[0][1] else "outdoors"
+    
+    def classify_weather(self, image_tensor):
+        weather_classes = ["sunny", "windy", "thunderstorm", "rainy", "drizzle"]
+        text_inputs = torch.cat([clip.tokenize(f"a photo of a {w} day") for w in weather_classes]).to(self.device)
+        with torch.no_grad():
+            image_features = self.clip_model.encode_image(image_tensor)
+            text_features = self.clip_model.encode_text(text_inputs)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+        probs = similarity.cpu().numpy()
+        return weather_classes[probs.argmax()]
+    
+    def classify_time(self, image_tensor):
+        time_classes = ["day", "night"]
+        text_inputs = torch.cat([clip.tokenize(f"a photo taken in the {t}") for t in time_classes]).to(self.device)
+        with torch.no_grad():
+            image_features = self.clip_model.encode_image(image_tensor)
+            text_features = self.clip_model.encode_text(text_inputs)
+        image_features /= image_features.norm(dim=-1, keepdim=True)
+        text_features /= text_features.norm(dim=-1, keepdim=True)
+        similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
+        probs = similarity.cpu().numpy()
+        return time_classes[probs.argmax()]
+    
     def recognize_objects(self, image):
         image_tensor= self.preprocess_image(image)
 
