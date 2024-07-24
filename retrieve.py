@@ -5,22 +5,23 @@ import numpy as np
 import sync
 
 class AudioRetriever:
-    def __init__(self, csv_path, audio_folder):
+    def __init__(self, csv_path, audio_folder, ambience_folder):
         self.audio_data = pd.read_csv(csv_path)
         self.audio_folder = audio_folder
+        self.ambience_folder = ambience_folder
 
     def get_audio_duration(self, audio_file):
         try:
             y, sr = librosa.load(audio_file, sr=None)
             
-            # 使用 librosa.effects.split 来找到所有非静音部分
+            # use librosa.effects.split to find non-silent part
             non_silent_intervals = librosa.effects.split(y, top_db=20)
             
             if len(non_silent_intervals) == 0:
                 print(f"No valid segments found in audio: {audio_file}")
-                return 0  # 没有有效音频
+                return 0  # if no valid sound effects
             
-            # 获取前半部分有效音频的时长
+            # get valid sound
             valid_duration = (non_silent_intervals[-1, 1] - non_silent_intervals[0, 0]) / sr
             
             print(f"Audio file: {audio_file}, Valid duration: {valid_duration:.2f} seconds")
@@ -64,14 +65,25 @@ class AudioRetriever:
                     print(f"No suitable audio found for object: {obj} with duration {duration:.2f}")
         
         return matched_audios
+    
+    def retrieve_ambience(self, ambience_type):
+        ambience_file = os.path.join(self.ambience_folder, f"{ambience_type}.wav")
+        if os.path.exists(ambience_file):
+            duration = self.get_audio_duration(ambience_file)
+            return {'audio_file': ambience_file, 'audio_duration': duration}
+        else:
+            print(f"Ambience file not found: {ambience_file}")
+            return None
 
-def retrieve_audio(video_path, csv_path, audio_folder):
+def retrieve_audio(video_path, csv_path, audio_folder, ambience_folder):
     syncer = sync.ObjectIntervalSync(video_path)
     syncer.analyze_frames()
     syncer.calculate_intervals()
     intervals = syncer.get_intervals()
+    ambience_type = syncer.get_ambience()
     
-    audio_retriever = AudioRetriever(csv_path, audio_folder)
+    audio_retriever = AudioRetriever(csv_path, audio_folder, ambience_folder)
     matched_audios = audio_retriever.match_audio_files(intervals)
+    ambience_audio = audio_retriever.retrieve_ambience(ambience_type)
     
-    return matched_audios
+    return matched_audios, ambience_audio, ambience_type
