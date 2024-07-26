@@ -4,3 +4,6 @@
 [submodule "videoCLIP"]
 	path = videoCLIP
 	url = https://github.com/facebookresearch/fairseq.git
+[submodule "grad-cam"]
+	path = grad-cam
+	url = https://github.com/ramprs/grad-cam.git
