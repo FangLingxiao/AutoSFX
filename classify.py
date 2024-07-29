@@ -45,8 +45,6 @@ class Classify:
             transforms.ToTensor()
         ])
         image_tensor = preprocess(image)
-        #normalized_image_tensor = transforms.Normalize((0.48145466, 0.4578275, 0.40821073), 
-        #                                               (0.26862954, 0.26130258, 0.27577711))(image_tensor)
         return image_tensor.unsqueeze(0).to(self.device)
     
     def classify_place(self, image_tensor):
@@ -118,19 +116,13 @@ class Classify:
     
     # Use grad-CAM to get the heatmap    
     def get_grad_cam(self, image):
-        preprocess = transforms.Compose([
-            #transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-            #transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
-        ])
-        image_tensor = preprocess(image).unsqueeze(0).to(self.device)
+        image_tensor = self.preprocess_image(image)
         image_tensor.requires_grad_()
 
         self.activations = None
         self.gradients = None
 
         # get visual transformer output
-        # with torch.enable_grad():
         features = self.clip_model.encode_image(image_tensor)
         output = features.mean()
         
@@ -145,27 +137,32 @@ class Classify:
         if self.activations is None or self.gradients is None:
             raise ValueError("Failed to capture activations or gradients")
         
-        print("Activations shape:", self.activations.shape)
-        print("Gradients shape:", self.gradients.shape)
+        # print("Activations shape:", self.activations.shape)
+        # print("Gradients shape:", self.gradients.shape)
 
         #gradients = self.last_conv_layer.weight.grad.data
         #gradients = activations.grad
         #pooled_gradients = torch.mean(gradients, dim=[0, 1])
 
-        weights = self.gradients.mean(1).unsqueeze(-1).unsqueeze(-1)
+        weights = self.gradients.mean(2)
 
         #activations = self.last_conv_layer(image_tensor).detach()
         #for i in range(activations.size(2)):
-        #    activations[:, :, i, :, :] *= pooled_gradients[i]
-        heatmap = (weights * self.activations).sum(1)
+        # activations[:, :, i, :, :] *= pooled_gradients[i]
+        heatmap = (weights.unsqueeze(-1) * self.activations).sum(2) # [50, 1]
 
-        heatmap = F.relu(heatmap)
+        heatmap = F.relu(heatmap) # [50]
         heatmap /= torch.max(heatmap)
 
-        return heatmap.squeeze().detach().cpu().numpy()
+        heatmap = heatmap.detach().cpu().numpy()
+
+        return heatmap
     
     def analyze_heatmap(self, heatmap, threshold=0.5):
+        # heatmap is 2D numpy array
+        heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min())
         binary_map = (heatmap > threshold).astype(np.uint8)
+        
         contours, _ = cv2.findContours(binary_map, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
         total_area = binary_map.shape[0] * binary_map.shape[1]
