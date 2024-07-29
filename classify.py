@@ -24,17 +24,16 @@ class Classify:
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.clip_model, self.clip_preprocess = self.load_clip_model()
-        self.last_conv_layer = self.clip_model.visual.transformer.resblocks[-1]
         self.clip_model.visual.transformer.resblocks[-1].register_forward_hook(self.save_activations)
+        self.clip_model.visual.transformer.resblocks[-1].register_full_backward_hook(self.save_gradients)
         self.activations = None
         self.gradients = None
 
     def save_activations(self, module, input, output):
         self.activations = output
-        output.register_hook(self.save_gradients)
 
-    def save_gradients(self, grad):
-        self.gradients = grad
+    def save_gradients(self, module, grad_input, grad_output):
+        self.gradients = grad_output[0]
 
 
     def load_clip_model(self):
@@ -120,9 +119,9 @@ class Classify:
     # Use grad-CAM to get the heatmap    
     def get_grad_cam(self, image):
         preprocess = transforms.Compose([
-            transforms.Resize((224, 224)),
+            #transforms.Resize((224, 224)),
             transforms.ToTensor(),
-            transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
+            #transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
         ])
         image_tensor = preprocess(image).unsqueeze(0).to(self.device)
         image_tensor.requires_grad_()
@@ -138,9 +137,6 @@ class Classify:
         self.clip_model.zero_grad()
         output.backward()
        
-        self.clip_model.zero_grad()
-        output.backward()
-        
         # activations = self.last_conv_layer.forward(image_tensor)
 
         # get the last output of Transformer block
@@ -148,17 +144,20 @@ class Classify:
 
         if self.activations is None or self.gradients is None:
             raise ValueError("Failed to capture activations or gradients")
+        
+        print("Activations shape:", self.activations.shape)
+        print("Gradients shape:", self.gradients.shape)
 
         #gradients = self.last_conv_layer.weight.grad.data
         #gradients = activations.grad
         #pooled_gradients = torch.mean(gradients, dim=[0, 1])
 
-        weights = torch.mean(self.gradients, dim=1)
+        weights = self.gradients.mean(1).unsqueeze(-1).unsqueeze(-1)
 
         #activations = self.last_conv_layer(image_tensor).detach()
         #for i in range(activations.size(2)):
         #    activations[:, :, i, :, :] *= pooled_gradients[i]
-        heatmap = torch.sum(weights[:, :, None, None] * self.activations, dim=1)
+        heatmap = (weights * self.activations).sum(1)
 
         heatmap = F.relu(heatmap)
         heatmap /= torch.max(heatmap)
