@@ -3,6 +3,9 @@ import torch
 import clip
 from torchvision import transforms
 import cv2
+import numpy as np
+from PIL import Image
+from torch.nn import functional as F
 
 ESC_50_classes = [
     'dog', 'chirping_birds', 'vacuum_cleaner', 'thunderstorm', 'door_wood_knock',
@@ -21,6 +24,13 @@ class Classify:
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.clip_model, self.clip_preprocess = self.load_clip_model()
+        self.last_conv_layer = self.clip_model.visual.transformer.resblocks[-1]
+        self.clip_model.visual.transformer.register_forward_hook(self.save_transformer_input)
+        self.transformer_input = None
+
+    def save_transformer_input(self, module, input, output):
+        self.transformer_input = input
+
 
     def load_clip_model(self):
         clip_model, preprocess = clip.load("ViT-B/32", device=self.device)
@@ -97,6 +107,68 @@ class Classify:
         values = [value.item() for value in values]
         return values, object_names
     
+    # Use grad-CAM to get the heatmap    
+    def get_grad_cam(self, image):
+        image_tensor = self.preprocess_image(image)
+        image_tensor = image_tensor.unsqueeze(0)
+        image_tensor.requires_grad_()
+
+        # get visual transformer output
+        with torch.enable_grad():
+            features = self.clip_model.encode_image(image_tensor)
+            output = features.mean()
+        
+        self.clip_model.zero_grad()
+        output.backward()
+
+        #output = self.clip_model.encode_image(image_tensor)
+        
+        #self.clip_model.zero_grad()
+        #output.backward(torch.ones_like(output))
+        
+        # activations = self.last_conv_layer.forward(image_tensor)
+
+        # get the last output of Transformer block
+        activations = self.last_conv_layer.imput[0]
+
+        #gradients = self.last_conv_layer.weight.grad.data
+        gradients = activations.grad
+        pooled_gradients = torch.mean(gradients, dim=[0, 2, 3])
+
+        #activations = self.last_conv_layer(image_tensor).detach()
+        for i in range(activations.size(1)):
+            activations[:, i, :, :] *= pooled_gradients[i]
+
+        heatmap = torch.mean(activations, dim=1).squeeze()
+        heatmap = F.relu(heatmap)
+        heatmap /= torch.max(heatmap)
+
+        return heatmap.detach().cpu().numpy()
+    
+    def analyze_heatmap(self, heatmap, threshold=0.5):
+        binary_map = (heatmap > threshold).astype(np.uint8)
+        contours, _ = cv2.findContours(binary_map, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        total_area = binary_map.shape[0] * binary_map.shape[1]
+        object_info = []
+
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            if area > 0:
+                relative_area = area / total_area
+                M = cv2.moments(contour)
+                if M["m00"] != 0:
+                    cx = int(M["m10"] / M["m00"])
+                    cy = int(M["m01"] / M["m00"])
+                    relative_x = cx / binary_map.shape[1]
+                    relative_y = cy / binary_map.shape[0]
+                    object_info.append({
+                        'area': relative_area,
+                        'position': (relative_x, relative_y)
+                    })
+
+        return object_info
+    
     def process_video(self, video_path, output_size=(224, 224)):
         video_capture = cv2.VideoCapture(video_path)
         frames = []
@@ -112,3 +184,4 @@ class Classify:
 
         video_capture.release()
         return frames
+

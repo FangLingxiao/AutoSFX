@@ -29,11 +29,11 @@ class AudioRetriever:
             print(f"Error processing effect file: {effect_file}, Error: {e}")
             return 0
 
-    def match_effect_files(self, intervals):
+    def match_effect_files(self, intervals, object_infos):
         matched_effects = {}
         for obj, obj_intervals in intervals.items():
             matched_effects[obj] = []
-            for start_frame, end_frame, duration in obj_intervals:
+            for idx, (start_frame, end_frame, duration) in enumerate(obj_intervals):
                 possible_effects = self.effect_data[self.effect_data['category'] == obj]
                 print(f"Object: {obj}, Interval duration: {duration:.2f} seconds")
                 
@@ -50,10 +50,12 @@ class AudioRetriever:
                     duration_diff = abs(effect_duration - duration)
                     
                     if effect_duration >= duration:
+                        object_info = object_infos[start_frame // 2] 
                         heapq.heappush(top_effects, (duration_diff, counter, {
                             'interval': (start_frame, end_frame),
                             'effect_file': effect_file,
-                            'effect_duration': effect_duration
+                            'effect_duration': effect_duration,
+                            'object_info': object_info
                         }))
                         counter += 1
                         if len(top_effects) > 5:
@@ -83,10 +85,11 @@ def retrieve_audio(video_path, csv_path, effect_folder, ambience_folder):
     syncer.analyze_frames()
     syncer.calculate_intervals()
     intervals = syncer.get_intervals()
+    object_infos = syncer.get_object_infos()
     ambience_type = syncer.get_ambience()
     
     audio_retriever = AudioRetriever(csv_path, effect_folder, ambience_folder)
-    matched_effect_audios = audio_retriever.match_effect_files(intervals)
+    matched_effect_audios = audio_retriever.match_effect_files(intervals, object_infos)
     matched_ambience_audio = audio_retriever.retrieve_ambience(ambience_type)
     
     return matched_effect_audios, matched_ambience_audio, ambience_type

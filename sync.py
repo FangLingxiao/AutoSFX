@@ -18,6 +18,7 @@ class ObjectIntervalSync:
         self.scene_counts = Counter()
         self.time_counts = Counter()
         self.ambience = None
+        self.object_infos =[]
 
     def analyze_frames(self, frame_step=2):
         for i, frame in enumerate(self.resized_frame[::frame_step]):
@@ -25,13 +26,18 @@ class ObjectIntervalSync:
             image_tensor = self.classify.preprocess_image(pil_image)
 
             values, objects = self.classify.recognize_objects(pil_image)
+            heatmap = self.classify.get_grad_cam(pil_image)
+            object_info = self.classify.analyze_heatmap(heatmap)
+
             frame_score = {
                 'object': objects,  # top 5
-                'score': values
+                'score': values,
+                'object_info': object_info
             }
             self.frame_values.append(values)
             self.frame_objects.append(objects)
             self.frame_scores.append(frame_score)
+            self.object_infos.append(object_info)
 
             # Classify weather, place, and scene
             weather = self.classify.classify_weather(image_tensor)
@@ -102,3 +108,6 @@ class ObjectIntervalSync:
     
     def get_ambience(self):
         return self.ambience
+    
+    def get_object_infos(self):
+        return self.object_infos

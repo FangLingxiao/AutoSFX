@@ -4,6 +4,23 @@ import numpy as np
 def adjust_volume(clip, volume_factor):
     return clip.volumex(volume_factor)
 
+def mix(clip, object_info):
+    if not object_info:
+        return clip
+    
+    area = object_info[0]['area']
+    position = object_info[0]['position']
+
+    # Adjust volume based on area
+    volume_factor = np.clip(area * 2, 0.5, 2.0)  # Scale area to volume factor
+    clip = adjust_volume(clip, volume_factor)
+
+    # Adjust pan based on position
+    pan_value = (position[0] - 0.5) * 2  # Map x-position to -1 to 1 range
+    clip = clip.audio_pan(pan_value)
+
+    return clip
+
 def merge_audio_video(video_path, effect_infos, ambience_audio, output_path):
     """
     Merge video with multiple audios and output to the specified path.
@@ -45,6 +62,8 @@ def merge_audio_video(video_path, effect_infos, ambience_audio, output_path):
             start_time = effect_info['interval'][0] / video_clip.fps
             end_time = min(start_time + effect_clip.duration, video_clip.duration)
             effect_clip = effect_clip.subclip(0, end_time - start_time)
+            effect_clip = mix(effect_clip, effect_info['object_info'])
+            
             effect_clips.append(effect_clip.set_start(start_time))
 
         # Merge sound effects
