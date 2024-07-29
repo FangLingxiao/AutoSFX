@@ -25,11 +25,16 @@ class Classify:
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.clip_model, self.clip_preprocess = self.load_clip_model()
         self.last_conv_layer = self.clip_model.visual.transformer.resblocks[-1]
-        self.clip_model.visual.transformer.register_forward_hook(self.save_transformer_input)
-        self.transformer_input = None
+        self.clip_model.visual.transformer.resblocks[-1].register_forward_hook(self.save_activations)
+        self.activations = None
+        self.gradients = None
 
-    def save_transformer_input(self, module, input, output):
-        self.transformer_input = input
+    def save_activations(self, module, input, output):
+        self.activations = output
+        output.register_hook(self.save_gradients)
+
+    def save_gradients(self, grad):
+        self.gradients = grad
 
 
     def load_clip_model(self):
@@ -96,54 +101,69 @@ class Classify:
         image_tensor= self.preprocess_image(image)
 
         text_inputs = torch.cat([clip.tokenize(f"a photo of {e}") for e in ESC_50_classes]).to(self.device)
-        with torch.no_grad():
+        with torch.enable_grad():
             image_features = self.clip_model.encode_image(image_tensor)
-            text_features = self.clip_model.encode_text(text_inputs)
+
+        torch.set_grad_enabled(False)
+        text_features = self.clip_model.encode_text(text_inputs)
+
         image_features /= image_features.norm(dim=-1, keepdim=True)
         text_features /= text_features.norm(dim=-1, keepdim=True)
         similarity = (100.0 * image_features @ text_features.T).softmax(dim=-1)
         values, indices = similarity[0].topk(5)
         object_names = [ESC_50_classes[idx] for idx in indices]
         values = [value.item() for value in values]
+
+        torch.set_grad_enabled(True)
         return values, object_names
     
     # Use grad-CAM to get the heatmap    
     def get_grad_cam(self, image):
-        image_tensor = self.preprocess_image(image)
-        image_tensor = image_tensor.unsqueeze(0)
+        preprocess = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711))
+        ])
+        image_tensor = preprocess(image).unsqueeze(0).to(self.device)
         image_tensor.requires_grad_()
 
+        self.activations = None
+        self.gradients = None
+
         # get visual transformer output
-        with torch.enable_grad():
-            features = self.clip_model.encode_image(image_tensor)
-            output = features.mean()
+        # with torch.enable_grad():
+        features = self.clip_model.encode_image(image_tensor)
+        output = features.mean()
         
         self.clip_model.zero_grad()
         output.backward()
-
-        #output = self.clip_model.encode_image(image_tensor)
-        
-        #self.clip_model.zero_grad()
-        #output.backward(torch.ones_like(output))
+       
+        self.clip_model.zero_grad()
+        output.backward()
         
         # activations = self.last_conv_layer.forward(image_tensor)
 
         # get the last output of Transformer block
-        activations = self.last_conv_layer.imput[0]
+        # activations = self.last_conv_layer.input[0]
+
+        if self.activations is None or self.gradients is None:
+            raise ValueError("Failed to capture activations or gradients")
 
         #gradients = self.last_conv_layer.weight.grad.data
-        gradients = activations.grad
-        pooled_gradients = torch.mean(gradients, dim=[0, 2, 3])
+        #gradients = activations.grad
+        #pooled_gradients = torch.mean(gradients, dim=[0, 1])
+
+        weights = torch.mean(self.gradients, dim=1)
 
         #activations = self.last_conv_layer(image_tensor).detach()
-        for i in range(activations.size(1)):
-            activations[:, i, :, :] *= pooled_gradients[i]
+        #for i in range(activations.size(2)):
+        #    activations[:, :, i, :, :] *= pooled_gradients[i]
+        heatmap = torch.sum(weights[:, :, None, None] * self.activations, dim=1)
 
-        heatmap = torch.mean(activations, dim=1).squeeze()
         heatmap = F.relu(heatmap)
         heatmap /= torch.max(heatmap)
 
-        return heatmap.detach().cpu().numpy()
+        return heatmap.squeeze().detach().cpu().numpy()
     
     def analyze_heatmap(self, heatmap, threshold=0.5):
         binary_map = (heatmap > threshold).astype(np.uint8)

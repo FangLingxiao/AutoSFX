@@ -1,3 +1,4 @@
+import torch
 import classify as classify
 from PIL import Image
 import cv2
@@ -25,7 +26,10 @@ class ObjectIntervalSync:
             pil_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             image_tensor = self.classify.preprocess_image(pil_image)
 
-            values, objects = self.classify.recognize_objects(pil_image)
+            with torch.no_grad():
+                values, objects = self.classify.recognize_objects(pil_image)
+
+            # Grad-CAM needs gradience
             heatmap = self.classify.get_grad_cam(pil_image)
             object_info = self.classify.analyze_heatmap(heatmap)
 
