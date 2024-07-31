@@ -128,25 +128,23 @@ class AudioRetriever:
 
         y, sr = librosa.load(effect_file)
 
-        # 使用 librosa 的 onset_detect 函数检测音频中的突变点
+        # use librosa  onset_detect function to detect onset frames
         onset_frames = librosa.onset.onset_detect(y=y, sr=sr, wait=int(sr/20), pre_avg=int(sr/40), post_avg=int(sr/40), pre_max=int(sr/40), post_max=int(sr/40))
         onset_times = librosa.frames_to_time(onset_frames, sr=sr)
 
-        # 计算音频的 RMS 能量
+        # calculate RMS energy in audio
         rms = librosa.feature.rms(y=y)[0]
         rms_times = librosa.times_like(rms, sr=sr)
 
-        # 找到 RMS 能量的峰值
         rms_peaks, _ = self.find_peaks(rms, height=np.mean(rms) + np.std(rms), distance=int(sr/10))
         rms_peak_times = rms_times[rms_peaks]
 
-        # 结合 onset 和 RMS 峰值，选择最显著的音频事件
+        # base on onset and RMS peaks，select the most matching audio event
         audio_events = sorted(set(onset_times).union(set(rms_peak_times)))
 
-        # 选择与视频动作数量相匹配的音频事件
+        # select audio event that matches with the number of motions
         selected_audio_events = audio_events[:len(motion_peak_frames)]
 
-        # 计算每个音频事件应该开始的时间
         audio_start_times = []
         for i, motion_peak_frame in enumerate(motion_peak_frames):
             if i < len(selected_audio_events):
