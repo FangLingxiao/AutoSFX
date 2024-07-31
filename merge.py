@@ -41,44 +41,39 @@ def merge_audio_video(video_path, effect_infos, ambience_audio, output_path):
     output_path (str): output folder
     """
     try:
-        # load video
         video_clip = VideoFileClip(video_path)
 
-        # Process effect audio
         if ambience_audio:
-            ambience_clip =  AudioFileClip(ambience_audio['ambience_file'])
-            # edit ambience duration
+            ambience_clip = AudioFileClip(ambience_audio['ambience_file'])
             ambience_clip = ambience_clip.subclip(0, video_clip.duration)
-            # edit ambience volume
-            volume_factor = 10**(-10/20) # convert dB to linear scale factor
+            volume_factor = 10**(-10/20)
             ambience_clip = adjust_volume(ambience_clip, volume_factor)
         else:
             ambience_clip = None
         
-        # load and edit audio
         effect_clips = []
         for effect_info in effect_infos:
             effect_clip = AudioFileClip(effect_info['effect_file'])
             start_time = effect_info['interval'][0] / video_clip.fps
+            
+            if effect_info.get('needs_fine_sync', False):
+                fine_sync_start = effect_info.get('fine_sync_start', 0)
+                start_time += fine_sync_start
+                print(f"Applying fine sync: start_time adjusted to {start_time}")
+            
             end_time = min(start_time + effect_clip.duration, video_clip.duration)
             effect_clip = effect_clip.subclip(0, end_time - start_time)
             effect_clip = mix(effect_clip, effect_info['object_info'])
             
             effect_clips.append(effect_clip.set_start(start_time))
 
-        # Merge sound effects
         all_audio_clips = effect_clips
         if ambience_clip:
             all_audio_clips.insert(0, ambience_clip)
 
         final_audio = CompositeAudioClip(all_audio_clips)
-
-
         
-        # Set final audio as audio for video
         video_clip = video_clip.set_audio(final_audio)
-
-        # Output        
         video_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')
         
         return True

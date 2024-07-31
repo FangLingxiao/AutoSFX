@@ -6,6 +6,8 @@ from collections import Counter
 
 class ObjectIntervalSync:
     def __init__(self, video_path):
+        self.video_path = video_path
+        self.fps = self.get_video_fps()
         self.classify = classify.Classify()
         self.video_path = video_path
         self.resized_frame = self.classify.process_video(video_path)
@@ -20,6 +22,29 @@ class ObjectIntervalSync:
         self.time_counts = Counter()
         self.ambience = None
         self.object_infos =[]
+        self.fine_sync_objects = [
+            "thunderstorm", "door_wood_knock", "can_opening", "clapping",
+            "mouse_click", "water_drops", "clock_alarm", 
+            "footsteps walking running", "glass_breaking"
+        ]
+        self.object_status = {obj: {'in_interval': False, 'start_frame': None, 'needs_fine_sync': False} for obj in classify.ESC_50_classes}
+
+    def get_video_fps(self):
+        video = cv2.VideoCapture(self.video_path)
+        if not video.isOpened():
+            print(f"Error opening video file: {self.video_path}")
+            return 30  # default FPS
+
+        fps = video.get(cv2.CAP_PROP_FPS)
+        video.release()
+
+        if fps <= 0:
+            print(f"Invalid FPS ({fps}) detected, using default 30 FPS")
+            return 30
+        return fps
+    
+    def needs_fine_sync(self, obj):
+        return obj in self.fine_sync_objects
 
     def analyze_frames(self, frame_step=2):
         for i, frame in enumerate(self.resized_frame[::frame_step]):
@@ -83,28 +108,31 @@ class ObjectIntervalSync:
                     self.ambience = "urban outdoor"
 
         
-    def calculate_intervals(self, frame_rate=30):
+    def calculate_intervals(self):
         for frame_idx, (objects, scores) in enumerate(zip(self.frame_objects, self.frame_values)):
             for obj, score in zip(objects, scores):
                 if score > 0.75:
                     if not self.object_status[obj]['in_interval']:
                         self.object_status[obj]['in_interval'] = True
                         self.object_status[obj]['start_frame'] = frame_idx
+                        self.object_status[obj]['needs_fine_sync'] = self.needs_fine_sync(obj)
                 elif score < 0.3:
                     if self.object_status[obj]['in_interval']:
                         self.object_status[obj]['in_interval'] = False
                         start_frame = self.object_status[obj]['start_frame']
                         end_frame = frame_idx
-                        duration = (end_frame - start_frame) / frame_rate
-                        self.object_intervals[obj].append((start_frame, end_frame, duration))
+                        duration = (end_frame - start_frame) / self.fps
+                        needs_fine_sync = self.object_status[obj]['needs_fine_sync']
+                        self.object_intervals[obj].append((start_frame, end_frame, duration, needs_fine_sync))
 
-        # If the video ends and some objects are still in an interval
+        # process objects that are still in the intervals
         for obj, status in self.object_status.items():
             if status['in_interval']:
                 start_frame = status['start_frame']
-                end_frame = len(self.resized_frame) // 2  # last frame index considered
-                duration = (end_frame - start_frame) / frame_rate
-                self.object_intervals[obj].append((start_frame, end_frame, duration))
+                end_frame = len(self.resized_frame) // 2
+                duration = (end_frame - start_frame) / self.fps
+                needs_fine_sync = status['needs_fine_sync']
+                self.object_intervals[obj].append((start_frame, end_frame, duration, needs_fine_sync))
 
     def get_intervals(self):
         self.object_intervals = {k: v for k, v in self.object_intervals.items() if v}
