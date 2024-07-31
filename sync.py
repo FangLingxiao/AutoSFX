@@ -29,6 +29,13 @@ class ObjectIntervalSync:
         ]
         self.object_status = {obj: {'in_interval': False, 'start_frame': None, 'needs_fine_sync': False} for obj in classify.ESC_50_classes}
 
+    def get_top_5_objects(self):
+        object_counter = Counter()
+        for objects in self.frame_objects:
+            object_counter.update(objects)
+        
+        return object_counter.most_common(5)
+
     def get_video_fps(self):
         video = cv2.VideoCapture(self.video_path)
         if not video.isOpened():
@@ -59,7 +66,7 @@ class ObjectIntervalSync:
             object_info = self.classify.analyze_heatmap(heatmap)
 
             frame_score = {
-                'object': objects,  # top 5
+                'object': objects,
                 'score': values,
                 'object_info': object_info
             }
@@ -107,32 +114,52 @@ class ObjectIntervalSync:
                 else:
                     self.ambience = "urban outdoor"
 
+    def user_select_object(self):
+        top_5 = self.get_top_5_objects()
+        print("Top 5 detected objects:")
+        for i, (obj, count) in enumerate(top_5, 1):
+            print(f"{i}. {obj}: {count} occurrences")
         
+        while True:
+            try:
+                choice = int(input("Select the most appropriate object (1-5): ")) - 1
+                if 0 <= choice < 5:
+                    return top_5[choice][0]
+                else:
+                    print("Please enter a number between 1 and 5.")
+            except ValueError:
+                print("Please enter a valid number.")
+
     def calculate_intervals(self):
-        for frame_idx, (objects, scores) in enumerate(zip(self.frame_objects, self.frame_values)):
-            for obj, score in zip(objects, scores):
+        selected_object = self.user_select_object()
+        for frame_idx, frame_score in enumerate(self.frame_scores):
+            objects = frame_score['object']
+            scores = frame_score['score']
+            
+            if selected_object in objects:
+                score = scores[objects.index(selected_object)]
+                
                 if score > 0.75:
-                    if not self.object_status[obj]['in_interval']:
-                        self.object_status[obj]['in_interval'] = True
-                        self.object_status[obj]['start_frame'] = frame_idx
-                        self.object_status[obj]['needs_fine_sync'] = self.needs_fine_sync(obj)
+                    if not self.object_status[selected_object]['in_interval']:
+                        self.object_status[selected_object]['in_interval'] = True
+                        self.object_status[selected_object]['start_frame'] = frame_idx
+                        self.object_status[selected_object]['needs_fine_sync'] = self.needs_fine_sync(selected_object)
                 elif score < 0.3:
-                    if self.object_status[obj]['in_interval']:
-                        self.object_status[obj]['in_interval'] = False
-                        start_frame = self.object_status[obj]['start_frame']
+                    if self.object_status[selected_object]['in_interval']:
+                        self.object_status[selected_object]['in_interval'] = False
+                        start_frame = self.object_status[selected_object]['start_frame']
                         end_frame = frame_idx
                         duration = (end_frame - start_frame) / self.fps
-                        needs_fine_sync = self.object_status[obj]['needs_fine_sync']
-                        self.object_intervals[obj].append((start_frame, end_frame, duration, needs_fine_sync))
+                        needs_fine_sync = self.object_status[selected_object]['needs_fine_sync']
+                        self.object_intervals[selected_object].append((start_frame, end_frame, duration, needs_fine_sync))
 
         # process objects that are still in the intervals
-        for obj, status in self.object_status.items():
-            if status['in_interval']:
-                start_frame = status['start_frame']
-                end_frame = len(self.resized_frame) // 2
-                duration = (end_frame - start_frame) / self.fps
-                needs_fine_sync = status['needs_fine_sync']
-                self.object_intervals[obj].append((start_frame, end_frame, duration, needs_fine_sync))
+        if self.object_status[selected_object]['in_interval']:
+            start_frame = self.object_status[selected_object]['start_frame']
+            end_frame = len(self.resized_frame) // 2
+            duration = (end_frame - start_frame) / self.fps
+            needs_fine_sync = self.object_status[selected_object]['needs_fine_sync']
+            self.object_intervals[selected_object].append((start_frame, end_frame, duration, needs_fine_sync))
 
     def get_intervals(self):
         self.object_intervals = {k: v for k, v in self.object_intervals.items() if v}

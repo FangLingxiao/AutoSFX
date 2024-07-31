@@ -81,6 +81,7 @@ def merge_audio_video(video_path, effect_infos, ambience_audio, output_path):
         video_clip.write_videofile(output_path, codec='libx264', audio_codec='aac')
         
         return True
+    
     except Exception as e:
         print(f"Error merging audio and video: {e}")
         return False

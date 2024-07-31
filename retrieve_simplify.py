@@ -179,6 +179,10 @@ class AudioRetriever:
 
 
     def retrieve_ambience(self, ambience_type):
+        if ambience_type is None:
+            print("No ambience type detected.")
+            return None
+        
         ambience_file = os.path.join(self.ambience_folder, f"{ambience_type}.mp3")
         if os.path.exists(ambience_file):
             return {'ambience_file': ambience_file}
@@ -196,6 +200,9 @@ def retrieve_audio(video_path, csv_path, effect_folder, ambience_folder):
     
     audio_retriever = AudioRetriever(csv_path, effect_folder, ambience_folder)
     matched_effect_audios = audio_retriever.match_effect_files(intervals, object_infos, video_path, syncer.fps)
-    matched_ambience_audio = audio_retriever.retrieve_ambience(ambience_type)
+    
+    matched_ambience_audio = None
+    if ambience_type:
+        matched_ambience_audio = audio_retriever.retrieve_ambience(ambience_type)
     
     return matched_effect_audios, matched_ambience_audio, ambience_type
