@@ -61,7 +61,7 @@ class AudioRetriever:
                         }
                         
                         if needs_fine_sync:
-                            effect_info['fine_sync_start'] = self.fine_sync_effect(
+                            effect_info['fine_sync_starts'], effect_info['audio_events'] = self.fine_sync_effect(
                                 video_path, (start_frame, end_frame), effect_file, video_fps
                             )
                         
@@ -76,20 +76,14 @@ class AudioRetriever:
                     print(f"Top 5 matched effect files for object: {obj}")
                     for i, (diff, _, effect) in enumerate(sorted(top_effects), 1):
                         print(f"{i}. {effect['effect_file']} (duration: {effect['effect_duration']:.2f}s, diff: {diff:.2f}s)")
-                        if effect['needs_fine_sync']:
-                            print(f"   Fine sync start: {effect['fine_sync_start']:.3f}s")
+                        if effect.get('needs_fine_sync', False) and 'fine_sync_starts' in effect:
+                            for j, start in enumerate(effect['fine_sync_starts']):
+                                if isinstance(start, (int, float)):
+                                    print(f"   Fine sync start {j+1}: {start:.3f}s")
+                                else:
+                                    print(f"   Fine sync start {j+1}: {start}")
                 else:
                     print(f"No suitable effect found for object: {obj} with duration {duration:.2f}")
-
-        print("Matched effects:")
-        for obj, effects in matched_effects.items():
-            print(f"Object: {obj}")
-            for effect_list in effects:
-                for effect in effect_list:
-                    print(f"  Effect file: {effect['effect_file']}")
-                    print(f"  Needs fine sync: {effect.get('needs_fine_sync', False)}")
-                    print(f"  Fine sync start: {effect.get('fine_sync_start', 'N/A')}")
-            print("---")
         
         return matched_effects
     
@@ -124,35 +118,67 @@ class AudioRetriever:
             flow = cv2.calcOpticalFlowFarneback(prev_gray, curr_gray, None, 0.5, 3, 15, 3, 5, 1.2, 0)
             motion.append(np.sum(np.abs(flow)))
 
-        # Find the frame with the most motion
-        if motion:
-            max_motion_frame = np.argmax(motion) + interval[0]
+        # find multiple motion peaks
+        motion_peaks, _ = self.find_peaks(motion, height=np.mean(motion) + 0.5 * np.std(motion), distance=int(video_fps/4))
+        if len(motion_peaks) == 0:
+            print("No motion peaks detected, using interval start")
+            motion_peak_frames = [interval[0]]
         else:
-            print(f"No motion detected in interval {interval}")
-            max_motion_frame = interval[0]
+            motion_peak_frames = [peak + interval[0] for peak in motion_peaks]
 
         y, sr = librosa.load(effect_file)
 
-        # Find the peaks of the audio
-        onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
-        if len(onset_frames) > 0:
-            peak_sample = onset_frames[0] * sr // librosa.time_to_frames(1, sr=sr)
-        else:
-            print(f"No peaks detected in audio file: {effect_file}")
-            peak_sample = 0
+        # 使用 librosa 的 onset_detect 函数检测音频中的突变点
+        onset_frames = librosa.onset.onset_detect(y=y, sr=sr, wait=int(sr/20), pre_avg=int(sr/40), post_avg=int(sr/40), pre_max=int(sr/40), post_max=int(sr/40))
+        onset_times = librosa.frames_to_time(onset_frames, sr=sr)
 
-        #video_fps = video.get(cv2.CAP_PROP_FPS)
-        #if video_fps == 0:
-        #    print(f"Invalid video FPS for {video_path}")
-        #    return 0
-        
-        audio_start_time = (max_motion_frame - interval[0]) / video_fps - peak_sample / sr
+        # 计算音频的 RMS 能量
+        rms = librosa.feature.rms(y=y)[0]
+        rms_times = librosa.times_like(rms, sr=sr)
 
-        print(f"Max motion frame: {max_motion_frame}, Interval start: {interval[0]}, Video FPS: {video_fps}")
-        print(f"Peak sample: {peak_sample}, Sample rate: {sr}")
-        print(f"Calculated fine sync start: {audio_start_time}")
+        # 找到 RMS 能量的峰值
+        rms_peaks, _ = self.find_peaks(rms, height=np.mean(rms) + np.std(rms), distance=int(sr/10))
+        rms_peak_times = rms_times[rms_peaks]
 
-        return max(0, audio_start_time)
+        # 结合 onset 和 RMS 峰值，选择最显著的音频事件
+        audio_events = sorted(set(onset_times).union(set(rms_peak_times)))
+
+        # 选择与视频动作数量相匹配的音频事件
+        selected_audio_events = audio_events[:len(motion_peak_frames)]
+
+        # 计算每个音频事件应该开始的时间
+        audio_start_times = []
+        for i, motion_peak_frame in enumerate(motion_peak_frames):
+            if i < len(selected_audio_events):
+                audio_start_time = (motion_peak_frame - interval[0]) / video_fps - selected_audio_events[i]
+                audio_start_times.append(max(0, audio_start_time))
+
+        if not audio_start_times:
+            print("No audio start times calculated, using default 0")
+            audio_start_times = [0]
+            selected_audio_events = [0]
+
+        print(f"Motion peak frames: {motion_peak_frames}")
+        print(f"Selected audio events: {selected_audio_events}")
+        print(f"Calculated fine sync starts: {audio_start_times}")
+
+        return audio_start_times, selected_audio_events
+    
+    def find_peaks(self, x, height=None, threshold=None, distance=None):
+        peaks = []
+        for i in range(1, len(x) - 1):
+            if x[i] > x[i-1] and x[i] > x[i+1]:
+                if height is None or x[i] > height:
+                    if threshold is None or x[i] - min(x[i-1], x[i+1]) > threshold:
+                        peaks.append(i)
+
+        # Apply distance condition
+        if distance is not None:
+            peaks = [peaks[i] for i in range(len(peaks)) if i == 0 or peaks[i] - peaks[i-1] >= distance]
+
+        peaks = np.array(peaks)
+        return peaks, np.array([x[i] for i in peaks]) if len(peaks) > 0 else np.array([])
+
 
     def retrieve_ambience(self, ambience_type):
         ambience_file = os.path.join(self.ambience_folder, f"{ambience_type}.mp3")

@@ -54,18 +54,22 @@ def merge_audio_video(video_path, effect_infos, ambience_audio, output_path):
         effect_clips = []
         for effect_info in effect_infos:
             effect_clip = AudioFileClip(effect_info['effect_file'])
-            start_time = effect_info['interval'][0] / video_clip.fps
             
-            if effect_info.get('needs_fine_sync', False):
-                fine_sync_start = effect_info.get('fine_sync_start', 0)
-                start_time += fine_sync_start
-                print(f"Applying fine sync: start_time adjusted to {start_time}")
-            
-            end_time = min(start_time + effect_clip.duration, video_clip.duration)
-            effect_clip = effect_clip.subclip(0, end_time - start_time)
-            effect_clip = mix(effect_clip, effect_info['object_info'])
-            
-            effect_clips.append(effect_clip.set_start(start_time))
+            if effect_info.get('needs_fine_sync', False) and 'fine_sync_starts' in effect_info:
+                for i, start_time in enumerate(effect_info['fine_sync_starts']):
+                    clip_start = effect_info['interval'][0] / video_clip.fps + start_time
+                    if i < len(effect_info['audio_events']):
+                        audio_event_time = effect_info['audio_events'][i]
+                        audio_end_time = min(audio_event_time + 1, effect_clip.duration)  # 限制音频长度为1秒或直到结束
+                        sub_effect_clip = effect_clip.subclip(audio_event_time, audio_end_time)
+                        sub_effect_clip = mix(sub_effect_clip, effect_info['object_info'])
+                        effect_clips.append(sub_effect_clip.set_start(clip_start))
+            else:
+                start_time = effect_info['interval'][0] / video_clip.fps
+                end_time = min(start_time + effect_clip.duration, video_clip.duration)
+                effect_clip = effect_clip.subclip(0, end_time - start_time)
+                effect_clip = mix(effect_clip, effect_info['object_info'])
+                effect_clips.append(effect_clip.set_start(start_time))
 
         all_audio_clips = effect_clips
         if ambience_clip:
