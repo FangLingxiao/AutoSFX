@@ -15,6 +15,10 @@ class ObjectIntervalSync:
         self.frame_objects = []
         self.frame_scores = []
         self.object_intervals = {obj: [] for obj in classify.ESC_50_classes}
+        self.start_threshold = 0.75
+        self.end_threshold = 0.5
+        self.min_interval_duration = 1.0
+        self.confidence_history = {obj: [] for obj in self.object_status.keys()}
         self.object_status = {obj: {'in_interval': False, 'start_frame': None} for obj in classify.ESC_50_classes}
         self.weather_counts = Counter()
         self.place_counts = Counter()
@@ -131,40 +135,54 @@ class ObjectIntervalSync:
     """
 
 
-def calculate_intervals(self):
-    min_interval_duration = 1.0  # 最小间隔时间（秒）
-    start_threshold = 0.75
-    end_threshold = 0.5
-    
-    for frame_idx, (objects, scores) in enumerate(zip(self.frame_objects, self.frame_values)):
-        for obj in self.object_status.keys():
-            if obj in objects:
-                score = scores[objects.index(obj)]
-                if score > start_threshold:
+    def calculate_intervals(self):
+        for frame_idx, (objects, scores) in enumerate(zip(self.frame_objects, self.frame_values)):
+            for obj in self.object_status.keys():
+                if obj in objects:
+                    score = scores[objects.index(obj)]
+                else:
+                    score = 0
+                
+                self.confidence_history[obj].append(score)
+                if len(self.confidence_history[obj]) > self.window_size:
+                    self.confidence_history[obj].pop(0)
+                
+                avg_score = np.mean(self.confidence_history[obj])
+                
+                if avg_score > self.start_threshold:
                     if not self.object_status[obj]['in_interval']:
-                        self.object_status[obj]['in_interval'] = True
-                        self.object_status[obj]['start_frame'] = frame_idx
-                        self.object_status[obj]['needs_fine_sync'] = self.needs_fine_sync(obj)
-                elif score < end_threshold:
+                        self.start_new_interval(obj, frame_idx)
+                elif avg_score < self.end_threshold:
                     if self.object_status[obj]['in_interval']:
                         self.end_interval(obj, frame_idx)
 
-    # 处理视频结束时仍在检测中的对象
-    for obj, status in self.object_status.items():
-        if status['in_interval']:
-            self.end_interval(obj, len(self.resized_frame) - 1)
+        # 处理视频结束时仍在检测中的对象
+        for obj, status in self.object_status.items():
+            if status['in_interval']:
+                self.end_interval(obj, len(self.resized_frame) - 1)
 
-    # 过滤掉太短的间隔
-    for obj in self.object_intervals.keys():
-        self.object_intervals[obj] = [interval for interval in self.object_intervals[obj] 
-                                      if interval[2] >= min_interval_duration]
+        # 过滤掉太短的间隔
+        for obj in self.object_intervals.keys():
+            self.object_intervals[obj] = [interval for interval in self.object_intervals[obj] 
+                                          if interval[2] >= self.min_interval_duration]
 
-def end_interval(self, obj, end_frame):
-    start_frame = self.object_status[obj]['start_frame']
-    duration = (end_frame - start_frame) / self.fps
-    needs_fine_sync = self.object_status[obj]['needs_fine_sync']
-    self.object_intervals[obj].append((start_frame, end_frame, duration, needs_fine_sync))
-    self.object_status[obj]['in_interval'] = False
+    def start_new_interval(self, obj, frame_idx):
+        # 结束其他正在进行的间隔
+        for other_obj, status in self.object_status.items():
+            if other_obj != obj and status['in_interval']:
+                self.end_interval(other_obj, frame_idx - 1)
+        
+        self.object_status[obj]['in_interval'] = True
+        self.object_status[obj]['start_frame'] = frame_idx
+        self.object_status[obj]['needs_fine_sync'] = self.needs_fine_sync(obj)
+
+    def end_interval(self, obj, end_frame):
+        start_frame = self.object_status[obj]['start_frame']
+        duration = (end_frame - start_frame) / self.fps
+        needs_fine_sync = self.object_status[obj]['needs_fine_sync']
+        self.object_intervals[obj].append((start_frame, end_frame, duration, needs_fine_sync))
+        self.object_status[obj]['in_interval'] = False
+
     def get_intervals(self):
         self.object_intervals = {k: v for k, v in self.object_intervals.items() if v}
         return self.object_intervals
