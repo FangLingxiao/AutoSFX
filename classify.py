@@ -6,6 +6,8 @@ import cv2
 import numpy as np
 from PIL import Image
 from torch.nn import functional as F
+import os
+import matplotlib.pyplot as plt
 
 ESC_50_classes = [
     'dog', 'chirping_birds', 'vacuum_cleaner', 'thunderstorm', 'door_wood_knock',
@@ -185,19 +187,38 @@ class Classify:
 
         return object_info
     
-    def process_video(self, video_path, output_size=(224, 224)):
-        video_capture = cv2.VideoCapture(video_path)
-        frames = []
+    def save_heatmap(self, heatmap, frame_number, output_dir):
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        plt.figure(figsize=(10, 10))
+        plt.imshow(heatmap, cmap='hot', interpolation='nearest')
+        plt.colorbar()
+        plt.title(f'Heatmap for frame {frame_number}')
+        plt.savefig(os.path.join(output_dir, f'heatmap_frame_{frame_number}.png'))
+        plt.close()
+    
+def process_video(self, video_path, output_size=(224, 224), output_dir='AutoSFX/grad_cam_heatmaps'):
+    video_capture = cv2.VideoCapture(video_path)
+    frames = []
+    frame_number = 0
 
-        while video_capture.isOpened():
-            ret, frame = video_capture.read()
-            if not ret:
-                break
-            
-            # Resize every frame
-            resized_frame = cv2.resize(frame, output_size)
-            frames.append(resized_frame)
+    while video_capture.isOpened():
+        ret, frame = video_capture.read()
+        if not ret:
+            break
+        
+        # Resize every frame
+        resized_frame = cv2.resize(frame, output_size)
+        frames.append(resized_frame)
 
-        video_capture.release()
-        return frames
+        # Generate and save heatmap for each frame
+        pil_image = Image.fromarray(cv2.cvtColor(resized_frame, cv2.COLOR_BGR2RGB))
+        heatmap = self.get_grad_cam(pil_image)
+        self.save_heatmap(heatmap, frame_number, output_dir)
+
+        frame_number += 1
+
+    video_capture.release()
+    return frames
 

@@ -6,11 +6,11 @@ from collections import Counter
 import numpy as np
 
 class ObjectIntervalSync:
-    def __init__(self, video_path):
+    def __init__(self, video_path, output_dir='AutoSFX/grad_cam_heatmaps'):
         self.video_path = video_path
         self.fps = self.get_video_fps()
         self.classify = classify.Classify()
-        self.resized_frame = self.classify.process_video(video_path)
+        self.resized_frame = self.classify.process_video(video_path, output_dir=output_dir)
         self.frame_values = []
         self.frame_objects = []
         self.frame_scores = []
