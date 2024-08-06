@@ -21,27 +21,10 @@ def mix(clip, object_info):
 
     return clip
 
-def merge_audio_video(video_path, effect_infos, ambience_audio, output_path):
-    """
-    Merge video with multiple audios and output to the specified path.
-
-    parameters:
-    video_path (str): path to video folder
-    effect_infos (list): list of effect info:
-        [
-            {
-                'interval': (start_frame, end_frame, duration),
-                'effect_file': 'path_to_effect_file',
-                'duration': duration
-                output_path: str
-            },
-            ...
-        ]
-    ambience_audio: audio files of ambience
-    output_path (str): output folder
-    """
+def merge_audio_video(video_path, all_effect_infos, ambience_audio, output_path):
     try:
         video_clip = VideoFileClip(video_path)
+        video_duration = video_clip.duration
 
         if ambience_audio:
             ambience_clip = AudioFileClip(ambience_audio['ambience_file'])
@@ -52,24 +35,20 @@ def merge_audio_video(video_path, effect_infos, ambience_audio, output_path):
             ambience_clip = None
         
         effect_clips = []
-        for effect_info in effect_infos:
+
+        for effect_info in all_effect_infos:
             effect_clip = AudioFileClip(effect_info['effect_file'])
             
-            if effect_info.get('needs_fine_sync', False) and 'fine_sync_starts' in effect_info:
-                for i, start_time in enumerate(effect_info['fine_sync_starts']):
-                    clip_start = effect_info['interval'][0] / video_clip.fps + start_time
-                    if i < len(effect_info['audio_events']):
-                        audio_event_time = effect_info['audio_events'][i]
-                        audio_end_time = min(audio_event_time + 1, effect_clip.duration)  # 限制音频长度为1秒或直到结束
-                        sub_effect_clip = effect_clip.subclip(audio_event_time, audio_end_time)
-                        sub_effect_clip = mix(sub_effect_clip, effect_info['object_info'])
-                        effect_clips.append(sub_effect_clip.set_start(clip_start))
-            else:
-                start_time = effect_info['interval'][0] / video_clip.fps
-                end_time = min(start_time + effect_clip.duration, video_clip.duration)
-                effect_clip = effect_clip.subclip(0, end_time - start_time)
-                effect_clip = mix(effect_clip, effect_info['object_info'])
-                effect_clips.append(effect_clip.set_start(start_time))
+            start_time = effect_info['interval'][0] / video_clip.fps
+            end_time = min(effect_info['interval'][1] / video_clip.fps, video_duration)
+            
+            if start_time >= video_duration:
+                print(f"Warning: Effect {effect_info['effect_file']} starts after video ends. Skipping.")
+                continue
+            
+            effect_clip = effect_clip.subclip(0, end_time - start_time)
+            effect_clip = mix(effect_clip, effect_info['object_info'])
+            effect_clips.append(effect_clip.set_start(start_time))
 
         all_audio_clips = effect_clips
         if ambience_clip:
