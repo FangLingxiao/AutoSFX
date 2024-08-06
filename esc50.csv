@@ -38,12 +38,12 @@ filename,fold,target,category,esc10,src_file,take
 1-137-A-32.wav,1,32,keyboard_typing,False,137,A
 1-137296-A-16.wav,1,16,wind,False,137296,A
 1-14262-A-37.wav,1,37,clock_alarm,False,14262,A
-1-155858-A-25.wav,1,25,footsteps,False,155858,A
-1-155858-B-25.wav,1,25,footsteps,False,155858,B
-1-155858-C-25.wav,1,25,footsteps,False,155858,C
-1-155858-D-25.wav,1,25,footsteps,False,155858,D
-1-155858-E-25.wav,1,25,footsteps,False,155858,E
-1-155858-F-25.wav,1,25,footsteps,False,155858,F
+1-155858-A-25.wav,1,25,walking running,False,155858,A
+1-155858-B-25.wav,1,25,walking running,False,155858,B
+1-155858-C-25.wav,1,25,walking running,False,155858,C
+1-155858-D-25.wav,1,25,walking running,False,155858,D
+1-155858-E-25.wav,1,25,walking running,False,155858,E
+1-155858-F-25.wav,1,25,walking running,False,155858,F
 1-15689-A-4.wav,1,4,frog,False,15689,A
 1-15689-B-4.wav,1,4,frog,False,15689,B
 1-160563-A-48.wav,1,48,fireworks,False,160563,A
@@ -111,7 +111,7 @@ filename,fold,target,category,esc10,src_file,take
 1-21896-A-35.wav,1,35,washing_machine,False,21896,A
 1-21934-A-38.wav,1,38,clock_tick,True,21934,A
 1-21935-A-38.wav,1,38,clock_tick,True,21935,A
-1-223162-A-25.wav,1,25,footsteps,False,223162,A
+1-223162-A-25.wav,1,25,walking running,False,223162,A
 1-22694-A-20.wav,1,20,crying_baby,True,22694,A
 1-22694-B-20.wav,1,20,crying_baby,True,22694,B
 1-22804-A-46.wav,1,46,church_bells,False,22804,A
@@ -247,7 +247,7 @@ filename,fold,target,category,esc10,src_file,take
 1-51035-A-16.wav,1,16,wind,False,51035,A
 1-51036-A-16.wav,1,16,wind,False,51036,A
 1-51037-A-16.wav,1,16,wind,False,51037,A
-1-51147-A-25.wav,1,25,footsteps,False,51147,A
+1-51147-A-25.wav,1,25,walking running,False,51147,A
 1-51170-A-18.wav,1,18,toilet_flush,False,51170,A
 1-51433-A-17.wav,1,17,pouring_water,False,51433,A
 1-51436-A-17.wav,1,17,pouring_water,False,51436,A
@@ -607,14 +607,14 @@ filename,fold,target,category,esc10,src_file,take
 2-188822-D-40.wav,2,40,helicopter,True,188822,D
 2-196688-A-8.wav,2,8,sheep,False,196688,A
 2-205966-A-16.wav,2,16,wind,False,205966,A
-2-209471-A-25.wav,2,25,footsteps,False,209471,A
-2-209472-A-25.wav,2,25,footsteps,False,209472,A
-2-209473-A-25.wav,2,25,footsteps,False,209473,A
-2-209474-A-25.wav,2,25,footsteps,False,209474,A
-2-209475-A-25.wav,2,25,footsteps,False,209475,A
-2-209476-A-25.wav,2,25,footsteps,False,209476,A
-2-209477-A-25.wav,2,25,footsteps,False,209477,A
-2-209478-A-25.wav,2,25,footsteps,False,209478,A
+2-209471-A-25.wav,2,25,walking running,False,209471,A
+2-209472-A-25.wav,2,25,walking running,False,209472,A
+2-209473-A-25.wav,2,25,walking running,False,209473,A
+2-209474-A-25.wav,2,25,walking running,False,209474,A
+2-209475-A-25.wav,2,25,walking running,False,209475,A
+2-209476-A-25.wav,2,25,walking running,False,209476,A
+2-209477-A-25.wav,2,25,walking running,False,209477,A
+2-209478-A-25.wav,2,25,walking running,False,209478,A
 2-250710-A-39.wav,2,39,glass_breaking,False,250710,A
 2-25292-A-22.wav,2,22,clapping,False,25292,A
 2-25293-A-22.wav,2,22,clapping,False,25293,A
@@ -816,10 +816,10 @@ filename,fold,target,category,esc10,src_file,take
 3-103401-B-33.wav,3,33,door_wood_creaks,False,103401,B
 3-103401-C-33.wav,3,33,door_wood_creaks,False,103401,C
 3-103401-D-33.wav,3,33,door_wood_creaks,False,103401,D
-3-103597-A-25.wav,3,25,footsteps,False,103597,A
-3-103598-A-25.wav,3,25,footsteps,False,103598,A
-3-103599-A-25.wav,3,25,footsteps,False,103599,A
-3-103599-B-25.wav,3,25,footsteps,False,103599,B
+3-103597-A-25.wav,3,25,walking running,False,103597,A
+3-103598-A-25.wav,3,25,walking running,False,103598,A
+3-103599-A-25.wav,3,25,walking running,False,103599,A
+3-103599-B-25.wav,3,25,walking running,False,103599,B
 3-104632-A-12.wav,3,12,crackling_fire,True,104632,A
 3-104761-A-7.wav,3,7,insects,False,104761,A
 3-104761-B-7.wav,3,7,insects,False,104761,B
@@ -1150,7 +1150,7 @@ filename,fold,target,category,esc10,src_file,take
 3-243726-A-43.wav,3,43,car_horn,False,243726,A
 3-246513-A-16.wav,3,16,wind,False,246513,A
 3-246513-B-16.wav,3,16,wind,False,246513,B
-3-249913-A-25.wav,3,25,footsteps,False,249913,A
+3-249913-A-25.wav,3,25,walking running,False,249913,A
 3-251617-A-48.wav,3,48,fireworks,False,251617,A
 3-253081-A-2.wav,3,2,pig,False,253081,A
 3-253084-A-2.wav,3,2,pig,False,253084,A
@@ -1183,9 +1183,9 @@ filename,fold,target,category,esc10,src_file,take
 3-87936-B-46.wav,3,46,church_bells,False,87936,B
 3-92637-A-18.wav,3,18,toilet_flush,False,92637,A
 3-93010-A-18.wav,3,18,toilet_flush,False,93010,A
-3-94342-A-25.wav,3,25,footsteps,False,94342,A
-3-94343-A-25.wav,3,25,footsteps,False,94343,A
-3-94344-A-25.wav,3,25,footsteps,False,94344,A
+3-94342-A-25.wav,3,25,walking running,False,94342,A
+3-94343-A-25.wav,3,25,walking running,False,94343,A
+3-94344-A-25.wav,3,25,walking running,False,94344,A
 3-94355-A-33.wav,3,33,door_wood_creaks,False,94355,A
 3-95694-A-5.wav,3,5,cat,False,95694,A
 3-95695-A-5.wav,3,5,cat,False,95695,A
@@ -1209,8 +1209,8 @@ filename,fold,target,category,esc10,src_file,take
 4-108352-A-33.wav,4,33,door_wood_creaks,False,108352,A
 4-111671-A-42.wav,4,42,siren,False,111671,A
 4-111671-B-42.wav,4,42,siren,False,111671,B
-4-117627-A-25.wav,4,25,footsteps,False,117627,A
-4-117630-A-25.wav,4,25,footsteps,False,117630,A
+4-117627-A-25.wav,4,25,walking running,False,117627,A
+4-117630-A-25.wav,4,25,walking running,False,117630,A
 4-119647-A-48.wav,4,48,fireworks,False,119647,A
 4-119647-B-48.wav,4,48,fireworks,False,119647,B
 4-119647-C-48.wav,4,48,fireworks,False,119647,C
@@ -1491,8 +1491,8 @@ filename,fold,target,category,esc10,src_file,take
 4-194711-A-38.wav,4,38,clock_tick,True,194711,A
 4-194754-A-0.wav,4,0,dog,True,194754,A
 4-194808-A-29.wav,4,29,drinking_sipping,False,194808,A
-4-194979-A-25.wav,4,25,footsteps,False,194979,A
-4-194981-A-25.wav,4,25,footsteps,False,194981,A
+4-194979-A-25.wav,4,25,walking running,False,194979,A
+4-194981-A-25.wav,4,25,walking running,False,194981,A
 4-195305-A-31.wav,4,31,mouse_click,False,195305,A
 4-195451-A-44.wav,4,44,engine,False,195451,A
 4-195497-A-11.wav,4,11,sea_waves,True,195497,A
@@ -1511,8 +1511,8 @@ filename,fold,target,category,esc10,src_file,take
 4-198360-B-49.wav,4,49,hand_saw,False,198360,B
 4-198360-C-49.wav,4,49,hand_saw,False,198360,C
 4-198841-A-37.wav,4,37,clock_alarm,False,198841,A
-4-198962-A-25.wav,4,25,footsteps,False,198962,A
-4-198962-B-25.wav,4,25,footsteps,False,198962,B
+4-198962-A-25.wav,4,25,walking running,False,198962,A
+4-198962-B-25.wav,4,25,walking running,False,198962,B
 4-198965-A-38.wav,4,38,clock_tick,True,198965,A
 4-199261-A-0.wav,4,0,dog,True,199261,A
 4-200330-A-6.wav,4,6,hen,False,200330,A
@@ -1568,8 +1568,8 @@ filename,fold,target,category,esc10,src_file,take
 4-218199-F-35.wav,4,35,washing_machine,False,218199,F
 4-218199-G-35.wav,4,35,washing_machine,False,218199,G
 4-218199-H-35.wav,4,35,washing_machine,False,218199,H
-4-218304-A-25.wav,4,25,footsteps,False,218304,A
-4-218304-B-25.wav,4,25,footsteps,False,218304,B
+4-218304-A-25.wav,4,25,walking running,False,218304,A
+4-218304-B-25.wav,4,25,walking running,False,218304,B
 4-223125-A-14.wav,4,14,chirping_birds,False,223125,A
 4-223127-A-14.wav,4,14,chirping_birds,False,223127,A
 4-232495-A-6.wav,4,6,hen,False,232495,A
@@ -1884,9 +1884,9 @@ filename,fold,target,category,esc10,src_file,take
 5-233787-A-7.wav,5,7,insects,False,233787,A
 5-234145-A-28.wav,5,28,snoring,False,234145,A
 5-234247-A-37.wav,5,37,clock_alarm,False,234247,A
-5-234263-A-25.wav,5,25,footsteps,False,234263,A
+5-234263-A-25.wav,5,25,walking running,False,234263,A
 5-234335-A-23.wav,5,23,breathing,False,234335,A
-5-234855-A-25.wav,5,25,footsteps,False,234855,A
+5-234855-A-25.wav,5,25,walking running,False,234855,A
 5-234879-A-1.wav,5,1,rooster,True,234879,A
 5-234879-B-1.wav,5,1,rooster,True,234879,B
 5-234923-A-32.wav,5,32,keyboard_typing,False,234923,A
@@ -1914,7 +1914,7 @@ filename,fold,target,category,esc10,src_file,take
 5-242711-A-9.wav,5,9,crow,False,242711,A
 5-242932-A-26.wav,5,26,laughing,False,242932,A
 5-242932-B-26.wav,5,26,laughing,False,242932,B
-5-243025-A-25.wav,5,25,footsteps,False,243025,A
+5-243025-A-25.wav,5,25,walking running,False,243025,A
 5-243036-A-29.wav,5,29,drinking_sipping,False,243036,A
 5-243448-A-14.wav,5,14,chirping_birds,False,243448,A
 5-243449-A-14.wav,5,14,chirping_birds,False,243449,A
@@ -1926,7 +1926,7 @@ filename,fold,target,category,esc10,src_file,take
 5-243773-B-44.wav,5,44,engine,False,243773,B
 5-243783-A-44.wav,5,44,engine,False,243783,A
 5-244178-A-32.wav,5,32,keyboard_typing,False,244178,A
-5-244310-A-25.wav,5,25,footsteps,False,244310,A
+5-244310-A-25.wav,5,25,walking running,False,244310,A
 5-244315-A-6.wav,5,6,hen,False,244315,A
 5-244315-B-6.wav,5,6,hen,False,244315,B
 5-244315-C-6.wav,5,6,hen,False,244315,C
@@ -1988,14 +1988,19 @@ filename,fold,target,category,esc10,src_file,take
 5-261464-A-23.wav,5,23,breathing,False,261464,A
 5-262641-A-15.wav,5,15,water_drops,False,262641,A
 5-262957-A-22.wav,5,22,clapping,False,262957,A
-5-263490-A-25.wav,5,25,footsteps,False,263490,A
-5-263491-A-25.wav,5,25,footsteps,False,263491,A
-5-263501-A-25.wav,5,25,footsteps,False,263501,A
+5-263490-A-25.wav,5,25,walking running,False,263490,A
+5-263491-A-25.wav,5,25,walking running,False,263491,A
+5-263501-A-25.wav,5,25,walking running,False,263501,A
 5-263775-A-26.wav,5,26,laughing,False,263775,A
 5-263775-B-26.wav,5,26,laughing,False,263775,B
 5-263831-A-6.wav,5,6,hen,False,263831,A
 5-263831-B-6.wav,5,6,hen,False,263831,B
 5-263902-A-36.wav,5,36,vacuum_cleaner,False,263902,A
-5-51149-A-25.wav,5,25,footsteps,False,51149,A
+5-51149-A-25.wav,5,25,walking running,False,51149,A
 5-61635-A-8.wav,5,8,sheep,False,61635,A
 5-9032-A-0.wav,5,0,dog,True,9032,A
+5a59c7c0359ba.mp3,5,0,high_heel,FALSE,0,A
+5a6151b29ea69.mp3,5,0,high_heel,FALSE,0,A
+5c99f7e4cc6de.mp3,5,0,high_heel,FALSE,0,A
+5970bf9c7ed1f.mp3,5,0,high_heel,FALSE,0,A
+highheels.mp3,5,0,high_heel,FALSE,0,A

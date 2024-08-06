@@ -12,12 +12,12 @@ ESC_50_classes = [
     'can_opening', 'crow', 'clapping', 'fireworks', 'chainsaw', 'airplane',
     'mouse_click', 'pouring_water', 'train', 'sheep', 'water_drops',
     'church_bells', 'clock_alarm', 'keyboard_typing', 'wind',
-    'footsteps walking running', 'frog', 'cow', 'brushing_teeth', 'car_horn',
+    'walking running', 'frog', 'cow', 'brushing_teeth', 'car_horn',
     'crackling_fire', 'helicopter', 'drinking_sipping', 'rain', 'insects',
     'laughing', 'hen', 'engine', 'breathing', 'crying_baby', 'hand_saw', 'coughing',
     'glass_breaking', 'snoring', 'toilet_flush', 'pig', 'washing_machine',
     'clock_tick', 'sneezing', 'rooster', 'sea_waves', 'siren', 'cat',
-    'door_wood_creaks', 'crickets'
+    'door_wood_creaks', 'crickets', 'high_heel'
 ]
 
 class Classify:
@@ -71,7 +71,7 @@ class Classify:
         return "indoors" if probs[0][0] > probs[0][1] else "outdoors"
     
     def classify_weather(self, image_tensor):
-        weather_classes = ["sunny", "windy", "thunderstorm", "rainy", "drizzle"]
+        weather_classes = ["sunny", "windy", "thunderstorm", "rainy"]
         text_inputs = torch.cat([clip.tokenize(f"a photo of a {w} day") for w in weather_classes]).to(self.device)
         with torch.no_grad():
             image_features = self.clip_model.encode_image(image_tensor)
@@ -96,8 +96,8 @@ class Classify:
     
     def recognize_objects(self, image):
         image_tensor= self.preprocess_image(image)
-
         text_inputs = torch.cat([clip.tokenize(f"a photo of {e}") for e in ESC_50_classes]).to(self.device)
+        
         with torch.enable_grad():
             image_features = self.clip_model.encode_image(image_tensor)
 
