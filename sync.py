@@ -27,18 +27,13 @@ class ObjectIntervalSync:
             "mouse_click", "water_drops", "clock_alarm", 
             "footsteps walking running", "glass_breaking"
         ]
-        self.total_frames = len(self.resized_frame)
-        self.object_thresholds = {
-            'default': {'start': 0.5, 'end': 0.3}
-        }
-        self.max_interval_duration = 5.0
+        self.start_threshold = 0.65
+        self.end_threshold = 0.35
         self.min_interval_duration = 1.0  # 最小间隔时间（秒）
         self.window_size = 5  # 滑动窗口大小
         self.confidence_history = {obj: [] for obj in self.object_status.keys()}
+        self.total_frames = len(self.resized_frame)  # 保存实际的总帧数
         self.end_consecutive_frames = 5  # 连续低于阈值的帧数，用于结束检测
-
-    def get_thresholds(self, obj):
-        return self.object_thresholds.get(obj, self.object_thresholds['default'])
 
     def get_top_5_objects(self):
         object_counter = Counter()
@@ -65,7 +60,8 @@ class ObjectIntervalSync:
         return obj in self.fine_sync_objects
 
     def analyze_frames(self, frame_step=2):
-        for i, frame in enumerate(self.resized_frame[::frame_step]):
+        for i, frame in enumerate(self.resized_frame):
+        #for i, frame in enumerate(self.resized_frame[::frame_step]):
             pil_image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             image_tensor = self.classify.preprocess_image(pil_image)
 
@@ -96,6 +92,11 @@ class ObjectIntervalSync:
             self.place_counts[place] += 1
             self.scene_counts[scene] += 1
             self.time_counts[scene] += 1
+
+            #print(f"Frame {i}: Objects: {objects}, Scores: {values}")
+
+        #for obj, history in self.confidence_history.items():
+        #    print(f"{obj}: {history}")
 
         self.determine_ambience()
 
@@ -144,7 +145,7 @@ class ObjectIntervalSync:
 
     def calculate_intervals(self):
         for obj in self.object_status.keys():
-            self.confidence_history[obj] = [0] * self.window_size
+            self.confidence_history[obj] = [0] * self.window_size  # 初始化置信度历史
 
         for frame_idx, (objects, scores) in enumerate(zip(self.frame_objects, self.frame_values)):
             for obj in self.object_status.keys():
@@ -157,14 +158,13 @@ class ObjectIntervalSync:
                 self.confidence_history[obj] = self.confidence_history[obj][-self.window_size:]
                 
                 avg_score = np.mean(self.confidence_history[obj])
-                thresholds = self.get_thresholds(obj)
                 
-                if avg_score > thresholds['start']:
+                if avg_score > self.start_threshold:
                     if not self.object_status[obj]['in_interval']:
                         self.start_new_interval(obj, frame_idx)
-                elif avg_score < thresholds['end']:
+                elif avg_score < self.end_threshold:
                     if self.object_status[obj]['in_interval']:
-                        if all(s < thresholds['end'] for s in self.confidence_history[obj][-self.end_consecutive_frames:]):
+                        if all(s < self.end_threshold for s in self.confidence_history[obj][-self.end_consecutive_frames:]):
                             self.end_interval(obj, frame_idx)
 
         # 处理视频结束时仍在检测中的对象
@@ -172,27 +172,13 @@ class ObjectIntervalSync:
             if status['in_interval']:
                 self.end_interval(obj, self.total_frames - 1)
 
-        # 后处理检测结果
-        self.post_process_intervals()
-
-    def post_process_intervals(self):
+        # 过滤掉太短的间隔，并确保结束帧不超过总帧数
         for obj in self.object_intervals.keys():
-            # 合并相近的区间
-            merged_intervals = []
-            for start, end, duration, needs_fine_sync in sorted(self.object_intervals[obj]):
-                if merged_intervals and start - merged_intervals[-1][1] < self.fps:  # 如果间隔小于1秒
-                    merged_intervals[-1] = (merged_intervals[-1][0], end, (end - merged_intervals[-1][0]) / self.fps, needs_fine_sync)
-                else:
-                    merged_intervals.append((start, end, duration, needs_fine_sync))
-
-            # 删除异常长的区间
-            filtered_intervals = [
-                (start, end, min(duration, self.max_interval_duration), needs_fine_sync)
-                for start, end, duration, needs_fine_sync in merged_intervals
-                if duration <= self.max_interval_duration
+            self.object_intervals[obj] = [
+                (start, min(end, self.total_frames - 1), min((min(end, self.total_frames - 1) - start) / self.fps, (self.total_frames - 1 - start) / self.fps), needs_fine_sync)
+                for start, end, duration, needs_fine_sync in self.object_intervals[obj]
+                if (min(end, self.total_frames - 1) - start) / self.fps >= self.min_interval_duration
             ]
-
-            self.object_intervals[obj] = filtered_intervals
 
     def start_new_interval(self, obj, frame_idx):
         # 结束其他正在进行的间隔
