@@ -76,7 +76,7 @@ class Classify:
         return "indoors" if probs[0][0] > probs[0][1] else "outdoors"
     
     def classify_weather(self, image_tensor):
-        weather_classes = ["sunny", "windy", "thunderstorm", "rainy"]
+        weather_classes = ["sunny", "windy"]
         text_inputs = torch.cat([clip.tokenize(f"a photo of a {w} day") for w in weather_classes]).to(self.device)
         with torch.no_grad():
             image_features = self.clip_model.encode_image(image_tensor)
