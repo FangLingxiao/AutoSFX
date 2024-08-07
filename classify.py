@@ -25,7 +25,9 @@ ESC_50_classes = [
 class Classify:
     def __init__(self):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"Using device: {self.device}")
         self.clip_model, self.clip_preprocess = self.load_clip_model()
+        print("CLIP model loaded sucessfully")
         self.clip_model.visual.transformer.resblocks[-1].register_forward_hook(self.save_activations)
         self.clip_model.visual.transformer.resblocks[-1].register_full_backward_hook(self.save_gradients)
         self.activations = None
@@ -47,6 +49,7 @@ class Classify:
             transforms.ToTensor()
         ])
         image_tensor = preprocess(image)
+        print("Image tensor shape:", image_tensor.shape)
         return image_tensor.unsqueeze(0).to(self.device)
     
     def classify_place(self, image_tensor):
@@ -116,7 +119,6 @@ class Classify:
         torch.set_grad_enabled(True)
         return values, object_names
     
-    # Use grad-CAM to get the heatmap    
     def get_grad_cam(self, image):
         image_tensor = self.preprocess_image(image)
         image_tensor.requires_grad_()
@@ -130,41 +132,49 @@ class Classify:
         
         self.clip_model.zero_grad()
         output.backward()
-       
-        # activations = self.last_conv_layer.forward(image_tensor)
-
-        # get the last output of Transformer block
-        # activations = self.last_conv_layer.input[0]
 
         if self.activations is None or self.gradients is None:
             raise ValueError("Failed to capture activations or gradients")
         
-        # print("Activations shape:", self.activations.shape)
-        # print("Gradients shape:", self.gradients.shape)
+        print("Activations shape:", self.activations.shape)
+        print("Gradients shape:", self.gradients.shape)
 
-        #gradients = self.last_conv_layer.weight.grad.data
-        #gradients = activations.grad
-        #pooled_gradients = torch.mean(gradients, dim=[0, 1])
+        weights = self.gradients.mean([0, 1])  # Changed from mean(2)
+        heatmap = (weights.unsqueeze(0).unsqueeze(0) * self.activations).sum(2)
 
-        weights = self.gradients.mean(2)
+        heatmap = F.relu(heatmap)
+        if torch.max(heatmap) > 0:
+            heatmap /= torch.max(heatmap)
+        else:
+            print("Warning: max value of heatmap is 0")
 
-        #activations = self.last_conv_layer(image_tensor).detach()
-        #for i in range(activations.size(2)):
-        # activations[:, :, i, :, :] *= pooled_gradients[i]
-        heatmap = (weights.unsqueeze(-1) * self.activations).sum(2) # [50, 1]
-
-        heatmap = F.relu(heatmap) # [50]
-        heatmap /= torch.max(heatmap)
-
-        heatmap = heatmap.detach().cpu().numpy()
+        heatmap = heatmap.squeeze().detach().cpu().numpy()
+        
+        # Reshape heatmap to a square shape if possible
+        heatmap_size = int(np.sqrt(heatmap.shape[0]))
+        if heatmap_size * heatmap_size == heatmap.shape[0]:
+            heatmap = heatmap.reshape(heatmap_size, heatmap_size)
+        else:
+            # If we can't reshape to a square, we'll keep it as a 1D array
+            print(f"Warning: Unable to reshape heatmap to a square. Shape: {heatmap.shape}")
+        
+        print("Heatmap shape:", heatmap.shape)
+        print("Heatmap min:", heatmap.min(), "max:", heatmap.max())
 
         return heatmap
     
     def analyze_heatmap(self, heatmap, threshold=0.5):
-        # heatmap is 2D numpy array
+        # Reshape heatmap to 2D if it's 1D
+        if len(heatmap.shape) == 1:
+            heatmap = heatmap.reshape(-1, 1)
+        
+        # Normalize heatmap
         heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min())
+        
+        # Create binary map
         binary_map = (heatmap > threshold).astype(np.uint8)
         
+        # Find contours
         contours, _ = cv2.findContours(binary_map, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
         total_area = binary_map.shape[0] * binary_map.shape[1]
@@ -187,38 +197,58 @@ class Classify:
 
         return object_info
     
-    def save_heatmap(self, heatmap, frame_number, output_dir):
+    def save_heatmap(self, heatmap, frame_number, output_dir, original_frame):
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         
-        plt.figure(figsize=(10, 10))
-        plt.imshow(heatmap, cmap='hot', interpolation='nearest')
-        plt.colorbar()
-        plt.title(f'Heatmap for frame {frame_number}')
-        plt.savefig(os.path.join(output_dir, f'heatmap_frame_{frame_number}.png'))
-        plt.close()
-    
-def process_video(self, video_path, output_size=(224, 224), output_dir='AutoSFX/grad_cam_heatmaps'):
-    video_capture = cv2.VideoCapture(video_path)
-    frames = []
-    frame_number = 0
-
-    while video_capture.isOpened():
-        ret, frame = video_capture.read()
-        if not ret:
-            break
+        if len(heatmap.shape) == 1:
+            heatmap_size = int(np.ceil(np.sqrt(heatmap.shape[0])))
+            heatmap = np.pad(heatmap, (0, heatmap_size**2 - heatmap.shape[0]), mode='constant')
+            heatmap = heatmap.reshape(heatmap_size, heatmap_size)
         
-        # Resize every frame
-        resized_frame = cv2.resize(frame, output_size)
-        frames.append(resized_frame)
+        heatmap = heatmap.astype(np.float32)
+        
+        heatmap = (heatmap - heatmap.min()) / (heatmap.max() - heatmap.min() + 1e-8)
+        
+        heatmap_resized = cv2.resize(heatmap, (original_frame.shape[1], original_frame.shape[0]), interpolation=cv2.INTER_LINEAR)
+        
+        heatmap_color = cv2.applyColorMap(np.uint8(255 * heatmap_resized), cv2.COLORMAP_JET)
+        
+        if len(original_frame.shape) == 2:
+            original_frame = cv2.cvtColor(original_frame, cv2.COLOR_GRAY2RGB)
+        elif original_frame.shape[2] == 4:
+            original_frame = cv2.cvtColor(original_frame, cv2.COLOR_RGBA2RGB)
+        
+        original_frame = original_frame.astype(np.uint8)
+        
+        superimposed_img = cv2.addWeighted(original_frame, 0.6, heatmap_color, 0.4, 0)
+        
+        cv2.imwrite(os.path.join(output_dir, f'heatmap_frame_{frame_number}.png'), superimposed_img)
 
-        # Generate and save heatmap for each frame
-        pil_image = Image.fromarray(cv2.cvtColor(resized_frame, cv2.COLOR_BGR2RGB))
-        heatmap = self.get_grad_cam(pil_image)
-        self.save_heatmap(heatmap, frame_number, output_dir)
+        print(f"Saved heatmap for frame {frame_number}")
+    
+    def process_video(self, video_path, output_size=(224, 224), output_dir='heatmaps', save_interval=15):
+        video_capture = cv2.VideoCapture(video_path)
+        frames = []
+        frame_number = 0
 
-        frame_number += 1
+        while video_capture.isOpened():
+            ret, frame = video_capture.read()
+            if not ret:
+                break
 
-    video_capture.release()
-    return frames
+            resized_frame = cv2.resize(frame, output_size, interpolation=cv2.INTER_LINEAR)
+            resized_frame = resized_frame.astype(np.uint8)
+            frames.append(resized_frame)
 
+            if frame_number % save_interval == 0:
+                print(f"Processing frame {frame_number}")
+                pil_image = Image.fromarray(cv2.cvtColor(resized_frame, cv2.COLOR_BGR2RGB))
+                heatmap = self.get_grad_cam(pil_image)
+                self.save_heatmap(heatmap, frame_number, output_dir, frame) 
+
+            frame_number += 1
+
+        video_capture.release()
+        print(f"Processed {frame_number} frames")
+        return frames
