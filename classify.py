@@ -7,7 +7,6 @@ import numpy as np
 from PIL import Image
 from torch.nn import functional as F
 import os
-import matplotlib.pyplot as plt
 
 ESC_50_classes = [
     'dog', 'chirping_birds', 'vacuum_cleaner', 'thunderstorm', 'door_wood_knock',

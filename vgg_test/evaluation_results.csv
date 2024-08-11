@@ -1,139 +1,138 @@
-video_id,true_label,rank,in_top_5,top_5_predictions
-1BivKH8w7Fo_000037.mp4,people cheering,46,False,"['playing acoustic guitar', 'playing electric guitar', 'playing ukulele', 'playing tambourine', 'people sobbing']"
--nJbGyPg6BY_000060.mp4,people clapping,5,True,"['people sobbing', 'people giggling', 'motorboat, speedboat acceleration', 'people finger snapping', 'people clapping']"
-TkrtTUPxHNI_000030.mp4,playing harpsichord,1,True,"['playing harpsichord', 'playing washboard', 'playing vibraphone', 'playing accordion', 'playing glockenspiel']"
-CMCtge02AnU_000260.mp4,playing hammond organ,1,True,"['playing hammond organ', 'playing vibraphone', 'playing steel guitar, slide guitar', 'playing timbales', 'playing congas']"
--0vPFx-wRRI_000030.mp4,people finger snapping,25,False,"['baby crying', 'sliding door', 'people eating noodle', 'cat growling', 'car passing by']"
-amEW4O2Z350_000035.mp4,playing glockenspiel,1,True,"['playing glockenspiel', 'playing vibraphone', 'playing accordion', 'playing washboard', 'playing piano']"
-A68tYY9AA9Q_000030.mp4,helicopter,2,True,"['airplane flyby', 'helicopter', 'motorboat, speedboat acceleration', 'engine accelerating, revving, vroom', 'mosquito buzzing']"
-yXeKrbtMz2M_000010.mp4,"male speech, man speaking",23,False,"['golf driving', 'playing darts', 'cap gun shooting', 'car passing by', 'people eating']"
-_mGrwBl_BMw_000010.mp4,singing bowl,58,False,"['people giggling', 'shot football', 'francolin calling', 'people belly laughing', 'people finger snapping']"
-9Ijpv6e57a4_000030.mp4,skateboarding,1,True,"['skateboarding', 'helicopter', 'hail', 'people slapping', 'thunder']"
-davLHMXIHDM_000320.mp4,reversing beeps,7,False,"['vehicle horn, car horn, honking', 'mouse clicking', 'people finger snapping', 'air conditioning noise', 'engine accelerating, revving, vroom']"
-PtgNHlRcC60_000030.mp4,people eating,105,False,"['vehicle horn, car horn, honking', 'reversing beeps', 'firing cannon', 'race car, auto racing', 'engine accelerating, revving, vroom']"
-cp8t27oT_ww_000000.mp4,playing ukulele,102,False,"['people giggling', 'cap gun shooting', 'train wheels squealing', 'skateboarding', 'people finger snapping']"
-0he6VV5Y9Bg_000030.mp4,cricket chirping,42,False,"['opening or closing car doors', 'engine accelerating, revving, vroom', 'reversing beeps', 'vehicle horn, car horn, honking', 'air conditioning noise']"
-YNv7mzbUUHc_000050.mp4,playing electric guitar,1,True,"['playing electric guitar', 'air conditioning noise', 'vacuum cleaner cleaning floors', 'playing steel guitar, slide guitar', 'playing washboard']"
-2BMOGrFU_m8_000167.mp4,"fly, housefly buzzing",1,True,"['fly, housefly buzzing', 'cuckoo bird calling', 'mosquito buzzing', 'singing choir', 'lawn mowing']"
-fnj0Bhpamqo_000115.mp4,squishing water,31,False,"['reversing beeps', 'train wheels squealing', 'vehicle horn, car horn, honking', 'cap gun shooting', 'ambulance siren']"
-1bbyaXEVouE_000030.mp4,fire crackling,108,False,"['singing choir', 'people clapping', 'playing oboe', 'child singing', 'train whistling']"
-iiAK295_-jk_000021.mp4,baby crying,61,False,"['opening or closing car doors', 'popping popcorn', 'people eating', 'people eating noodle', 'reversing beeps']"
-Qd9hSBBfXq4_000776.mp4,playing oboe,1,True,"['playing oboe', 'people finger snapping', 'playing djembe', 'people giggling', 'playing harpsichord']"
-Wqux-4IupdU_000112.mp4,playing djembe,1,True,"['playing djembe', 'mouse pattering', 'people eating', 'people eating noodle', 'popping popcorn']"
-E9ulxBBGUVc_000350.mp4,thunder,16,False,"['playing electric guitar', 'train wheels squealing', 'wind rustling leaves', 'frog croaking', 'people whispering']"
-4IZKViDklnM_000030.mp4,wind rustling leaves,106,False,"['race car, auto racing', 'engine accelerating, revving, vroom', 'motorboat, speedboat acceleration', 'tornado roaring', 'airplane flyby']"
-tOTQJaRkmaY_000381.mp4,playing congas,3,True,"['playing djembe', 'playing tambourine', 'playing congas', 'playing gong', 'playing washboard']"
-Wl2iTlhjKls_000033.mp4,playing erhu,13,False,"['singing choir', 'playing congas', 'playing oboe', 'playing timbales', 'playing vibraphone']"
-0kK-PnupAow_000086.mp4,opening or closing car doors,1,True,"['opening or closing car doors', 'car passing by', 'reversing beeps', 'golf driving', 'engine accelerating, revving, vroom']"
-DuewD1imTvQ_000019.mp4,sheep bleating,32,False,"['bird squawking', 'alligators, crocodiles hissing', 'air conditioning noise', 'mouse pattering', 'francolin calling']"
-w2bAs3lug3c_000030.mp4,goat bleating,53,False,"['male speech, man speaking', 'mouse clicking', 'thunder', 'people clapping', 'people cheering']"
-yInXc5FJNyc_000129.mp4,train wheels squealing,1,True,"['train wheels squealing', 'train whistling', 'car passing by', 'reversing beeps', 'people cheering']"
-YCfGy7J2oFo_000051.mp4,playing djembe,117,False,"['cell phone buzzing', 'cricket chirping', 'underwater bubbling', 'people belly laughing', 'hail']"
-1ON1iLkUPp8_000040.mp4,playing vibraphone,132,False,"['motorboat, speedboat acceleration', 'people giggling', 'popping popcorn', 'swimming', 'chicken clucking']"
-gVDOQ2ke0bQ_000174.mp4,barn swallow calling,1,True,"['barn swallow calling', 'cricket chirping', 'bird squawking', 'air conditioning noise', 'bathroom ventilation fan running']"
-x2ztI3YNu9o_000030.mp4,playing accordion,1,True,"['playing accordion', 'motorboat, speedboat acceleration', 'hail', 'mouse pattering', 'yodelling']"
-fumA4irXnyQ_000030.mp4,fire crackling,106,False,"['bathroom ventilation fan running', 'chinchilla barking', 'air conditioning noise', 'playing washboard', 'squishing water']"
-XQoTMdWSzb8_000370.mp4,shot football,1,True,"['shot football', 'bouncing on trampoline', 'snake rattling', 'male speech, man speaking', 'goat bleating']"
-xanOeYcQpcM_000020.mp4,lawn mowing,1,True,"['lawn mowing', 'tractor digging', 'reversing beeps', 'engine accelerating, revving, vroom', 'electric grinder grinding']"
-Uw8xdpugGNc_000060.mp4,opening or closing car electric windows,3,True,"['vehicle horn, car horn, honking', 'engine accelerating, revving, vroom', 'opening or closing car electric windows', 'opening or closing car doors', 'ambulance siren']"
-IiCNAp2sR9c_000030.mp4,singing choir,1,True,"['singing choir', 'child singing', 'singing bowl', 'people clapping', 'people finger snapping']"
-RXSyVeHp2yA_000000.mp4,cap gun shooting,1,True,"['cap gun shooting', 'cutting hair with electric trimmers', 'shot football', 'engine accelerating, revving, vroom', 'playing darts']"
-dQpqPwiKva0_000054.mp4,yodelling,29,False,"['people burping', 'people giggling', 'people whispering', 'people babbling', 'people coughing']"
-BqmRiPZgeVY_000296.mp4,playing table tennis,67,False,"['people cheering', 'lions roaring', 'shot football', 'popping popcorn', 'lions growling']"
-Nq-jBzkOKwA_000004.mp4,opening or closing car doors,6,False,"['reversing beeps', 'engine accelerating, revving, vroom', 'car passing by', 'golf driving', 'race car, auto racing']"
-9nxDHhDpJUk_000065.mp4,cuckoo bird calling,77,False,"['dog howling', 'baby crying', 'goat bleating', 'fox barking', 'penguins braying']"
-0UeEkqkZmvo_000160.mp4,playing washboard,2,True,"['playing steel guitar, slide guitar', 'playing washboard', 'people cheering', 'playing acoustic guitar', 'playing tambourine']"
-AKxm4V3OylU_000030.mp4,lions roaring,2,True,"['lions growling', 'lions roaring', 'people cheering', 'dog howling', 'mouse pattering']"
-Fs462T7ODUQ_000030.mp4,sliding door,1,True,"['sliding door', 'bathroom ventilation fan running', 'playing table tennis', 'dog howling', 'parrot talking']"
-C9LzJZ1PpL0_000000.mp4,civil defense siren,8,False,"['airplane flyby', 'car passing by', 'thunder', 'helicopter', 'tornado roaring']"
-xcATi4rdSu8_000002.mp4,wood thrush calling,3,True,"['bird squawking', 'cuckoo bird calling', 'wood thrush calling', 'barn swallow calling', 'cricket chirping']"
-iMNEd2l5Ff8_000030.mp4,firing cannon,29,False,"['people whispering', 'helicopter', 'motorboat, speedboat acceleration', 'ambulance siren', 'people coughing']"
-Oc9azgD3RJ8_000030.mp4,people babbling,27,False,"['baby laughter', 'parrot talking', 'baby crying', 'dog howling', 'cat purring']"
-XaIep0xC8BA_000117.mp4,playing timbales,2,True,"['playing congas', 'playing timbales', 'playing drum kit', 'playing cymbal', 'playing washboard']"
-sKnCwuTOzwE_000032.mp4,hail,45,False,"['mosquito buzzing', 'mynah bird singing', 'air conditioning noise', 'bouncing on trampoline', 'bird squawking']"
-UkQRD1PBszA_000454.mp4,playing darts,26,False,"['child singing', 'bouncing on trampoline', 'baby laughter', 'people finger snapping', 'playing castanets']"
-WAztA-Iqb4g_000030.mp4,playing bagpipes,60,False,"['playing vibraphone', 'people burping', 'reversing beeps', 'people belly laughing', 'playing steel guitar, slide guitar']"
-OifvajLsn5I_000030.mp4,horse neighing,9,False,"['alligators, crocodiles hissing', 'mouse pattering', 'vacuum cleaner cleaning floors', 'race car, auto racing', 'penguins braying']"
-acLR8eDYB7A_000072.mp4,chinchilla barking,1,True,"['chinchilla barking', 'fox barking', 'dog howling', 'popping popcorn', 'cat growling']"
-dfXl7_lnt0U_000109.mp4,bouncing on trampoline,1,True,"['bouncing on trampoline', 'people slapping', 'people babbling', 'train wheels squealing', 'playing oboe']"
-1Isq_KJHriU_000016.mp4,dog baying,2,True,"['dog howling', 'dog baying', 'bouncing on trampoline', 'lawn mowing', 'dog bow-wow']"
-emAtRpVf2_A_000270.mp4,vacuum cleaner cleaning floors,1,True,"['vacuum cleaner cleaning floors', 'chinchilla barking', 'fox barking', 'cat growling', 'dog howling']"
-5lyszxMsT20_000110.mp4,playing harp,1,True,"['playing harp', 'playing harpsichord', 'playing washboard', 'playing accordion', 'playing zither']"
-Mr--N4d6lIM_000323.mp4,"male speech, man speaking",4,True,"['playing harmonica', 'people whispering', 'playing accordion', 'male speech, man speaking', 'yodelling']"
-L7E5Tv357Ys_000040.mp4,air conditioning noise,2,True,"['bathroom ventilation fan running', 'air conditioning noise', 'smoke detector beeping', 'ambulance siren', 'civil defense siren']"
-Kp3-Drt61_M_000011.mp4,people giggling,9,False,"['baby laughter', 'baby crying', 'people belly laughing', 'popping popcorn', 'child singing']"
-xnMI64kXQA8_000252.mp4,cricket chirping,11,False,"['chipmunk chirping', 'wood thrush calling', 'frog croaking', 'wind rustling leaves', 'fly, housefly buzzing']"
-rJftCcAQZEY_000460.mp4,cricket chirping,12,False,"['chipmunk chirping', 'cap gun shooting', 'wood thrush calling', 'chainsawing trees', 'fox barking']"
-5hLkSi3BcWA_000021.mp4,cat growling,1,True,"['cat growling', 'cat purring', 'dog howling', 'popping popcorn', 'squishing water']"
-bPzCbrmKoVY_000019.mp4,bathroom ventilation fan running,1,True,"['bathroom ventilation fan running', 'hair dryer drying', 'electric grinder grinding', 'cutting hair with electric trimmers', 'smoke detector beeping']"
-t7oAteGa55g_000090.mp4,"vehicle horn, car horn, honking",62,False,"['people clapping', 'people sobbing', 'people cheering', 'people slapping', 'people finger snapping']"
-zexkXRiD9zk_000050.mp4,sailing,1,True,"['sailing', 'motorboat, speedboat acceleration', 'playing electric guitar', 'firing cannon', 'squishing water']"
-04QV0Xi5YTk_000030.mp4,playing zither,1,True,"['playing zither', 'playing harpsichord', 'playing washboard', 'playing steel guitar, slide guitar', 'playing accordion']"
-21lu8Iaf9II_000060.mp4,people finger snapping,6,False,"['people sobbing', 'baby crying', 'cutting hair with electric trimmers', 'people burping', 'people babbling']"
-q1SftfE_LF4_000028.mp4,playing castanets,28,False,"['playing acoustic guitar', 'playing ukulele', 'cutting hair with electric trimmers', 'playing squash', 'airplane flyby']"
-A7o-wmriwc8_000007.mp4,wood thrush calling,1,True,"['wood thrush calling', 'woodpecker pecking tree', 'mynah bird singing', 'cuckoo bird calling', 'cricket chirping']"
-AraV2kvytIY_000024.mp4,airplane flyby,3,True,"['shot football', 'mosquito buzzing', 'airplane flyby', 'dog bow-wow', 'dog howling']"
-WkavReH4LE0_000020.mp4,frog croaking,1,True,"['frog croaking', 'alligators, crocodiles hissing', 'people cheering', 'dog howling', 'mouse pattering']"
-zZ4zhYtg_dM_000120.mp4,golf driving,1,True,"['golf driving', 'popping popcorn', 'cap gun shooting', 'vacuum cleaner cleaning floors', 'playing darts']"
-KqDVIt2T5q0_000013.mp4,cell phone buzzing,1,True,"['cell phone buzzing', 'lighting firecrackers', 'ambulance siren', 'cutting hair with electric trimmers', 'electric shaver, electric razor shaving']"
-DcpPZ9pltNs_000137.mp4,cupboard opening or closing,1,True,"['cupboard opening or closing', 'male speech, man speaking', 'sliding door', 'bathroom ventilation fan running', 'mouse clicking']"
-M1pPtg6a_g8_000230.mp4,playing piano,26,False,"['playing electric guitar', 'mouse clicking', 'singing choir', 'magpie calling', 'child singing']"
-Y7aU3aCEf5A_000030.mp4,playing harpsichord,1,True,"['playing harpsichord', 'playing vibraphone', 'playing hammond organ', 'playing oboe', 'chinchilla barking']"
-ov_g-r7Vo8M_000030.mp4,playing cymbal,3,True,"['playing drum kit', 'playing timbales', 'playing cymbal', 'playing congas', 'playing tambourine']"
-5Q-328ATot8_000019.mp4,tornado roaring,2,True,"['dog howling', 'tornado roaring', 'foghorn', 'firing cannon', 'mynah bird singing']"
-RRpcIanKONA_000025.mp4,smoke detector beeping,35,False,"['people finger snapping', 'people eating noodle', 'people giggling', 'playing harmonica', 'yodelling']"
-2jKheXvnT6o_000030.mp4,cat purring,1,True,"['cat purring', 'cat growling', 'baby crying', 'chinchilla barking', 'squishing water']"
-UoSID1KzWuI_000030.mp4,playing acoustic guitar,2,True,"['playing electric guitar', 'playing acoustic guitar', 'playing steel guitar, slide guitar', 'playing ukulele', 'playing oboe']"
-6U942AYlcXA_000030.mp4,"engine accelerating, revving, vroom",4,True,"['opening or closing car electric windows', 'opening or closing car doors', 'vehicle horn, car horn, honking', 'engine accelerating, revving, vroom', 'car passing by']"
-Chi9u8htrm4_000230.mp4,hair dryer drying,1,True,"['hair dryer drying', 'cutting hair with electric trimmers', 'vacuum cleaner cleaning floors', 'bathroom ventilation fan running', 'air conditioning noise']"
-b93GiuJ3KpY_000030.mp4,people burping,40,False,"['child singing', 'popping popcorn', 'baby crying', 'bathroom ventilation fan running', 'people eating noodle']"
-bcZ3ZPQQbYA_000011.mp4,mynah bird singing,9,False,"['bird squawking', 'airplane flyby', 'cricket chirping', 'cuckoo bird calling', 'engine accelerating, revving, vroom']"
-RuCO6UGsRHI_000313.mp4,barn swallow calling,2,True,"['bird squawking', 'barn swallow calling', 'mynah bird singing', 'mouse pattering', 'penguins braying']"
-VFXf1DTi2IA_000383.mp4,"electric shaver, electric razor shaving",2,True,"['cutting hair with electric trimmers', 'electric shaver, electric razor shaving', 'mouse pattering', 'vacuum cleaner cleaning floors', 'electric grinder grinding']"
-53KoRxxr1jc_000030.mp4,goat bleating,2,True,"['sheep bleating', 'goat bleating', 'vehicle horn, car horn, honking', 'horse neighing', 'barn swallow calling']"
-uH926Sn1pYE_000044.mp4,cutting hair with electric trimmers,11,False,"['reversing beeps', 'people babbling', 'mouse clicking', 'vacuum cleaner cleaning floors', 'air conditioning noise']"
-2rW2I6KmWhw_000030.mp4,dog howling,1,True,"['dog howling', 'fox barking', 'dog baying', 'dog bow-wow', 'cat growling']"
-DV1C1XbdG7A_000220.mp4,playing harmonica,67,False,"['skateboarding', 'people eating', 'motorboat, speedboat acceleration', 'playing piano', 'people eating noodle']"
-mxQ37FEFLKY_000030.mp4,people whispering,1,True,"['people whispering', 'baby crying', 'male speech, man speaking', 'cutting hair with electric trimmers', 'people coughing']"
-PLg7FE5Vp58_000184.mp4,scuba diving,3,True,"['underwater bubbling', 'squishing water', 'scuba diving', 'vehicle horn, car horn, honking', 'train wheels squealing']"
-ymsvz9dPbog_000116.mp4,playing washboard,3,True,"['playing vibraphone', 'swimming', 'playing washboard', 'underwater bubbling', 'mouse pattering']"
-Bk34jgx0Vo4_000356.mp4,wood thrush calling,1,True,"['wood thrush calling', 'bird squawking', 'cuckoo bird calling', 'woodpecker pecking tree', 'mynah bird singing']"
-tVK9-hEfbnY_000021.mp4,chinchilla barking,1,True,"['chinchilla barking', 'mouse pattering', 'cricket chirping', 'mouse clicking', 'air conditioning noise']"
-DNBpRJMEm4s_000030.mp4,playing electric guitar,2,True,"['electric grinder grinding', 'playing electric guitar', 'vehicle horn, car horn, honking', 'playing steel guitar, slide guitar', 'playing hammond organ']"
-RgEEH6TgOEI_000020.mp4,playing gong,107,False,"['baby crying', 'people whispering', 'motorboat, speedboat acceleration', 'people giggling', 'yodelling']"
-10aBef0Ghkc_000040.mp4,playing piano,1,True,"['playing piano', 'playing harpsichord', 'playing hammond organ', 'playing accordion', 'playing zither']"
-pGnTEZvUcuo_000163.mp4,train whistling,4,True,"['motorboat, speedboat acceleration', 'reversing beeps', 'male speech, man speaking', 'train whistling', 'alligators, crocodiles hissing']"
-mnH8IKZXmMs_000257.mp4,playing squash,1,True,"['playing squash', 'car passing by', 'squishing water', 'engine accelerating, revving, vroom', 'bird squawking']"
-qHDSQ2RC-sQ_000030.mp4,singing bowl,1,True,"['singing bowl', 'playing congas', 'popping popcorn', 'playing timbales', 'underwater bubbling']"
-oyVYqVPSL-c_000224.mp4,electric grinder grinding,1,True,"['electric grinder grinding', 'wind rustling leaves', 'cutting hair with electric trimmers', 'chainsawing trees', 'cap gun shooting']"
-SJ9TY-iqD9Q_000010.mp4,child singing,1,True,"['child singing', 'mouse pattering', 'playing darts', 'baby crying', 'sliding door']"
-AlZUmhHgF8g_000008.mp4,chipmunk chirping,1,True,"['chipmunk chirping', 'popping popcorn', 'barn swallow calling', 'bird squawking', 'electric grinder grinding']"
-HeLV1buhzpI_000030.mp4,people belly laughing,32,False,"['baby laughter', 'playing castanets', 'baby crying', 'popping popcorn', 'squishing water']"
-CIAd34BDDHg_000015.mp4,underwater bubbling,2,True,"['scuba diving', 'underwater bubbling', 'squishing water', 'firing cannon', 'swimming']"
-HVHe2kibCQU_000005.mp4,cupboard opening or closing,10,False,"['bathroom ventilation fan running', 'air conditioning noise', 'mouse clicking', 'motorboat, speedboat acceleration', 'vehicle horn, car horn, honking']"
-vkxPLFRLAy0_000000.mp4,fox barking,1,True,"['fox barking', 'dog howling', 'car passing by', 'engine accelerating, revving, vroom', 'lions growling']"
-JgxnHxZXzrI_000011.mp4,lighting firecrackers,1,True,"['lighting firecrackers', 'cap gun shooting', 'opening or closing car doors', 'people finger snapping', 'firing cannon']"
-0izHOfrwPn4_000180.mp4,duck quacking,69,False,"['male speech, man speaking', 'people burping', 'people giggling', 'playing ukulele', 'parrot talking']"
-7916WqcPKBA_000030.mp4,cat purring,1,True,"['cat purring', 'cat growling', 'chinchilla barking', 'baby laughter', 'baby crying']"
-Iuq6qxeDVR0_000190.mp4,francolin calling,14,False,"['mynah bird singing', 'woodpecker pecking tree', 'chinchilla barking', 'people eating noodle', 'cap gun shooting']"
-UP30sk9je00_000049.mp4,tractor digging,1,True,"['tractor digging', 'cap gun shooting', 'reversing beeps', 'chainsawing trees', 'lawn mowing']"
-eFzyxoc1w1g_000010.mp4,bird squawking,30,False,"['bathroom ventilation fan running', 'air conditioning noise', 'electric grinder grinding', 'squishing water', 'cupboard opening or closing']"
-dBSRk9afGgE_000035.mp4,chinchilla barking,1,True,"['chinchilla barking', 'dog howling', 'squishing water', 'popping popcorn', 'cat growling']"
--Q_UXiwWR_c_000030.mp4,car passing by,37,False,"['skateboarding', 'baby crying', 'train whistling', 'yodelling', 'people finger snapping']"
-lKTKLkLPwmI_000009.mp4,underwater bubbling,53,False,"['swimming', 'child singing', 'squishing water', 'chinchilla barking', 'playing washboard']"
-bFfr9DS2qgA_000340.mp4,playing harmonica,1,True,"['playing harmonica', 'playing glockenspiel', 'playing harp', 'playing oboe', 'playing harpsichord']"
-hyNm8rXY2-g_000003.mp4,"alligators, crocodiles hissing",1,True,"['alligators, crocodiles hissing', 'lawn mowing', 'bird squawking', 'airplane flyby', 'fly, housefly buzzing']"
-8BWcP2uUzpo_000107.mp4,people humming,6,False,"['cuckoo bird calling', 'baby crying', 'people babbling', 'people whispering', 'cutting hair with electric trimmers']"
-TzVFAvWdiV0_000030.mp4,"playing steel guitar, slide guitar",2,True,"['playing zither', 'playing steel guitar, slide guitar', 'firing cannon', 'playing washboard', 'playing oboe']"
-28p0DrP3KgI_000021.mp4,electric grinder grinding,1,True,"['electric grinder grinding', 'chainsawing trees', 'mouse pattering', 'vacuum cleaner cleaning floors', 'playing washboard']"
-5NyjOIjRKKM_000018.mp4,dog bow-wow,1,True,"['dog bow-wow', 'dog howling', 'dog baying', 'hail', 'engine accelerating, revving, vroom']"
-zj5JwVSZJJ4_000222.mp4,hail,4,True,"['tornado roaring', 'thunder', 'alligators, crocodiles hissing', 'hail', 'air conditioning noise']"
-M14YsutGzIk_000005.mp4,cuckoo bird calling,3,True,"['woodpecker pecking tree', 'mynah bird singing', 'cuckoo bird calling', 'francolin calling', 'bird squawking']"
-wTOSS0cx50s_000170.mp4,people running,40,False,"['shot football', 'male speech, man speaking', 'reversing beeps', 'playing steel guitar, slide guitar', 'playing electric guitar']"
-yUi5HXpdh7s_000103.mp4,people slapping,1,True,"['people slapping', 'people finger snapping', 'hail', 'motorboat, speedboat acceleration', 'people giggling']"
-fIer0uCLqSM_000030.mp4,people coughing,19,False,"['baby laughter', 'baby crying', 'child singing', 'playing harmonica', 'popping popcorn']"
-cwzG9KvA--Y_000006.mp4,air conditioning noise,2,True,"['bathroom ventilation fan running', 'air conditioning noise', 'hair dryer drying', 'smoke detector beeping', 'cricket chirping']"
-iJ6DxdwyDeE_000064.mp4,chicken clucking,1,True,"['chicken clucking', 'foghorn', 'lawn mowing', 'bird squawking', 'francolin calling']"
-AS_f4Rn-hAc_000007.mp4,magpie calling,1,True,"['magpie calling', 'mynah bird singing', 'woodpecker pecking tree', 'parrot talking', 'cuckoo bird calling']"
-sm7eBFHtdeA_000030.mp4,wind rustling leaves,68,False,"['playing piano', 'playing harpsichord', 'playing harp', 'playing hammond organ', 'playing erhu']"
-iCaMiydCvFI_000061.mp4,penguins braying,1,True,"['penguins braying', 'mynah bird singing', 'bird squawking', 'parrot talking', 'airplane flyby']"
+video_id,true_label,rank,in_top_5
+1BivKH8w7Fo_000037.mp4,people cheering,14,False
+-nJbGyPg6BY_000060.mp4,people clapping,4,True
+TkrtTUPxHNI_000030.mp4,playing harpsichord,1,True
+CMCtge02AnU_000260.mp4,playing hammond organ,2,True
+amEW4O2Z350_000035.mp4,playing glockenspiel,2,True
+_mGrwBl_BMw_000010.mp4,singing bowl,145,False
+9Ijpv6e57a4_000030.mp4,skateboarding,1,True
+PtgNHlRcC60_000030.mp4,people eating,145,False
+cp8t27oT_ww_000000.mp4,playing ukulele,117,False
+0he6VV5Y9Bg_000030.mp4,cricket chirping,68,False
+2BMOGrFU_m8_000167.mp4,"fly, housefly buzzing",8,False
+fnj0Bhpamqo_000115.mp4,squishing water,46,False
+1bbyaXEVouE_000030.mp4,fire crackling,66,False
+iiAK295_-jk_000021.mp4,baby crying,104,False
+Qd9hSBBfXq4_000776.mp4,playing oboe,2,True
+Wqux-4IupdU_000112.mp4,playing djembe,1,True
+4IZKViDklnM_000030.mp4,wind rustling leaves,153,False
+tOTQJaRkmaY_000381.mp4,playing congas,3,True
+0kK-PnupAow_000086.mp4,opening or closing car doors,1,True
+DuewD1imTvQ_000019.mp4,sheep bleating,37,False
+w2bAs3lug3c_000030.mp4,goat bleating,59,False
+1ON1iLkUPp8_000040.mp4,playing vibraphone,118,False
+x2ztI3YNu9o_000030.mp4,playing accordion,1,True
+fumA4irXnyQ_000030.mp4,fire crackling,126,False
+XQoTMdWSzb8_000370.mp4,shot football,1,True
+xanOeYcQpcM_000020.mp4,lawn mowing,1,True
+Uw8xdpugGNc_000060.mp4,opening or closing car electric windows,5,True
+IiCNAp2sR9c_000030.mp4,singing choir,1,True
+RXSyVeHp2yA_000000.mp4,cap gun shooting,1,True
+dQpqPwiKva0_000054.mp4,yodelling,39,False
+BqmRiPZgeVY_000296.mp4,playing table tennis,137,False
+Nq-jBzkOKwA_000004.mp4,opening or closing car doors,10,False
+0UeEkqkZmvo_000160.mp4,playing washboard,2,True
+C9LzJZ1PpL0_000000.mp4,civil defense siren,11,False
+xcATi4rdSu8_000002.mp4,wood thrush calling,2,True
+Oc9azgD3RJ8_000030.mp4,people babbling,67,False
+sKnCwuTOzwE_000032.mp4,hail,10,False
+WAztA-Iqb4g_000030.mp4,playing bagpipes,56,False
+OifvajLsn5I_000030.mp4,horse neighing,1,True
+1Isq_KJHriU_000016.mp4,dog baying,8,False
+emAtRpVf2_A_000270.mp4,vacuum cleaner cleaning floors,1,True
+5lyszxMsT20_000110.mp4,playing harp,1,True
+L7E5Tv357Ys_000040.mp4,air conditioning noise,2,True
+rJftCcAQZEY_000460.mp4,cricket chirping,40,False
+5hLkSi3BcWA_000021.mp4,cat growling,5,True
+t7oAteGa55g_000090.mp4,"vehicle horn, car horn, honking",157,False
+04QV0Xi5YTk_000030.mp4,playing zither,1,True
+q1SftfE_LF4_000028.mp4,playing castanets,2,True
+A7o-wmriwc8_000007.mp4,wood thrush calling,3,True
+DcpPZ9pltNs_000137.mp4,cupboard opening or closing,1,True
+M1pPtg6a_g8_000230.mp4,playing piano,52,False
+ov_g-r7Vo8M_000030.mp4,playing cymbal,5,True
+5Q-328ATot8_000019.mp4,tornado roaring,1,True
+RRpcIanKONA_000025.mp4,smoke detector beeping,72,False
+2jKheXvnT6o_000030.mp4,cat purring,1,True
+UoSID1KzWuI_000030.mp4,playing acoustic guitar,2,True
+6U942AYlcXA_000030.mp4,"engine accelerating, revving, vroom",6,False
+Chi9u8htrm4_000230.mp4,hair dryer drying,1,True
+b93GiuJ3KpY_000030.mp4,people burping,12,False
+RuCO6UGsRHI_000313.mp4,barn swallow calling,3,True
+53KoRxxr1jc_000030.mp4,goat bleating,2,True
+DV1C1XbdG7A_000220.mp4,playing harmonica,113,False
+tVK9-hEfbnY_000021.mp4,chinchilla barking,1,True
+DNBpRJMEm4s_000030.mp4,playing electric guitar,3,True
+RgEEH6TgOEI_000020.mp4,playing gong,162,False
+10aBef0Ghkc_000040.mp4,playing piano,1,True
+mnH8IKZXmMs_000257.mp4,playing squash,1,True
+oyVYqVPSL-c_000224.mp4,electric grinder grinding,1,True
+vkxPLFRLAy0_000000.mp4,fox barking,1,True
+JgxnHxZXzrI_000011.mp4,lighting firecrackers,1,True
+UP30sk9je00_000049.mp4,tractor digging,1,True
+dBSRk9afGgE_000035.mp4,chinchilla barking,1,True
+-Q_UXiwWR_c_000030.mp4,car passing by,58,False
+lKTKLkLPwmI_000009.mp4,underwater bubbling,2,True
+8BWcP2uUzpo_000107.mp4,people humming,16,False
+TzVFAvWdiV0_000030.mp4,"playing steel guitar, slide guitar",1,True
+fIer0uCLqSM_000030.mp4,people coughing,99,False
+cwzG9KvA--Y_000006.mp4,air conditioning noise,1,True
+iCaMiydCvFI_000061.mp4,penguins braying,1,True
+x_5t0os3A2I_000025.mp4,playing bongo,4,True
+X3wyXjui7ac_000213.mp4,playing tympani,1,True
+mE0qnyrn7qI_000585.mp4,forging swords,2,True
+PwHZ4df5G7w_000030.mp4,people farting,41,False
+8dqn-f5rwNk_000016.mp4,plastic bottle crushing,1,True
+tI5h94hKdVs_000005.mp4,tractor digging,1,True
+9gCeNCnWZhE_000030.mp4,wind rustling leaves,5,True
+Tlzma5yXcgM_000287.mp4,writing on blackboard with chalk,1,True
+xRAj37jqdT0_000082.mp4,hammering nails,11,False
+Fk4VP1Qo4so_000018.mp4,train horning,2,True
+_4NEAgqguN0_000220.mp4,church bell ringing,1,True
+_-_5kbw2Mcw_000000.mp4,people coughing,43,False
+1B-RuZgSqf8_000030.mp4,raining,9,False
+XCiz7m7HQrs_000120.mp4,cat caterwauling,69,False
+RVKBNv4mc6Y_000107.mp4,volcano explosion,102,False
+Cah4MJiVUFI_000030.mp4,people crowd,30,False
+EqgVljnECRY_000170.mp4,opening or closing drawers,87,False
+jDSo2g-tW98_000019.mp4,chipmunk chirping,1,True
+BQ86IY0M860_000030.mp4,sailing,1,True
+XDWakm0T8fY_000519.mp4,dog baying,34,False
+MCkQ9sVaOhw_000010.mp4,bird wings flapping,3,True
+MWWihdWE2FE_000060.mp4,typing on computer keyboard,19,False
+9mu6h8pTooE_000030.mp4,horse clip-clop,4,True
+5bLzJ_iMl4s_000030.mp4,cat purring,1,True
+HzXWXYxXyYA_000050.mp4,playing bass guitar,2,True
+63Wmu5s4e88_000162.mp4,tractor digging,1,True
+oqT3pTJFv5k_000030.mp4,people finger snapping,4,True
+KiyyzCJy3Vk_000077.mp4,otter growling,1,True
+bD5MT2FoOJg_000030.mp4,hair dryer drying,2,True
+H9nKSRtcxiY_000080.mp4,turkey gobbling,1,True
+wq2BsXHkz4E_000378.mp4,playing djembe,1,True
+CDABuTQLNe8_000140.mp4,opening or closing drawers,3,True
+AwJ8orGuOXg_000000.mp4,driving buses,1,True
+XQHs8qK9HPA_000082.mp4,"ice cream truck, ice cream van",170,False
+ortMPr9w06U_000021.mp4,"donkey, ass braying",1,True
+ILv7AQF-ltI_000030.mp4,"bird chirping, tweeting",4,True
+NjeQbXpuIIk_000081.mp4,underwater bubbling,1,True
+bOCkO_RtPIo_000300.mp4,sailing,2,True
+S1glY1D9qDU_000035.mp4,hedge trimmer running,1,True
+_RLsXrr0fQo_000080.mp4,playing acoustic guitar,1,True
+NKvL6apPfhw_000000.mp4,owl hooting,1,True
+vzY4mHyr-F8_000214.mp4,people humming,12,False
+-aK9JKAGme0_000051.mp4,cheetah chirrup,1,True
+0q6GOUn_dhU_000066.mp4,playing castanets,1,True
+D1NDNFZGY7k_000040.mp4,playing cymbal,57,False
+Ind-moQb3tc_000006.mp4,turkey gobbling,128,False
+O5v1-O5A-f0_000410.mp4,people sobbing,7,False
+ANWU9Hiy_5k_000040.mp4,driving motorcycle,1,True
+5JaMY3ZmbXM_000188.mp4,tractor digging,1,True
+jr1v6zC2ejk_000330.mp4,cupboard opening or closing,4,True
+JV_iMt0idTU_000019.mp4,elk bugling,1,True
+7Gua0-UrKIw_000030.mp4,reversing beeps,3,True
+KmBaE7ozWow_000030.mp4,playing ukulele,1,True
+e53eD7dpQi0_000030.mp4,mouse squeaking,1,True
+Fl_gvQ9bPvM_000129.mp4,eletric blender running,1,True
+JEbcpvPiz5s_000280.mp4,black capped chickadee calling,38,False
+1nbCJJtsruI_000000.mp4,playing saxophone,163,False
+BiNbPvdPthY_000030.mp4,dog whimpering,19,False

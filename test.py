@@ -13,7 +13,7 @@ import argparse
 
 # CLIP模型加载
 device = "cuda" if torch.cuda.is_available() else "cpu"
-model, preprocess = clip.load("ViT-B/32", device=device)
+model, preprocess = clip.load("ViT-L/14", device=device)
 
 def extract_frames(video_path, num_frames=5):
     frames = []

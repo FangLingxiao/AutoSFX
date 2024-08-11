@@ -7,6 +7,8 @@ import argparse
 import time
 import random
 
+#python download_vggsound.py --csv_path "/home/s5614279/Master Project/AutoSFX/vgg_test/vggsound.csv" --output_dir "/home/s5614279/Master Project/audiosetdl/audioset_data/" --num_samples 2000
+
 def download_video(video_id, label, output_dir, max_retries=3):
     parts = video_id.split('_')
     youtube_id = '_'.join(parts[:-1])  # 合并除最后一部分外的所有部分作为 YouTube ID
