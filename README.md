@@ -1,11 +1,16 @@
 # AutoSFX
+Author: Lingxiao Fang
 
 ## Project Overview
-Provide a brief introduction to the purpose, functionality, and features of the project.
+This work introduced AutoSFX, an innovative system designed to automate the process of matching and synchronizing sound effects with video content. It comprises three primary modules: video analysis, audio-video synchronisation, and audio editing. By leveraging CLIP  and computer vision techniques, AutoSFX addresses the time-consuming nature of traditional sound effect editing in video production. It offers a fully automated workflow that enhances efficiency and bridges the gap between theory and application.The effectiveness of AutoSFX was demonstrated through both quantitative and qualitative evaluations.
+
+
+## Approach
+
 
 ## Environment Setup
 
-This project is developed using Python 3.9. 
+This project is developed using `Python 3.9`. 
 
 To set up the environment, please install all required packages listed in the `requirements.txt` file.
 
